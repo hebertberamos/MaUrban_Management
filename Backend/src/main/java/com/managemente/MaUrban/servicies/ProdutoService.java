@@ -48,6 +48,14 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
+    @Transactional
+    public Produto restaurarEstoque(UUID id, int quantidadeDevolvida) {
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+        produto.setQuantEstoque(produto.getQuantEstoque() + quantidadeDevolvida);
+        return produtoRepository.save(produto);
+    }
+
     private ProdutoResponseDTO mapToDTO(Produto p) {
         return new ProdutoResponseDTO(p.getId(), p.getNome(), p.getPrecoAtual(), p.getQuantEstoque());
     }

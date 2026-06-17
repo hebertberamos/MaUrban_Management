@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -62,14 +63,48 @@ public class PedidoClienteService {
         // 5. Salva tudo no banco (CascadeType.ALL fará o Hibernate salvar itens e parcelas automaticamente)
         pedido = pedidoRepository.save(pedido);
 
-        return new PedidoResponseDTO(
-                pedido.getId(),
-                cliente.getNome(),
-                pedido.getValorTotalPedido(),
-                pedido.getDataPedido(),
-                pedido.getMetodoPagamento(),
-                pedido.isEmAberto()
+        return mapToResponseDTO(pedido);
+    }
+
+    @Transactional
+    public PedidoResponseDTO atualizarPedido(UUID pedidoId, PedidoClienteRequestDTO dto) {
+        PedidoCliente pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+
+        // 1. Devolve ao estoque os itens do pedido antigo
+        pedido.getPecas().forEach(item ->
+                produtoService.restaurarEstoque(item.getProduto().getId(), item.getQuantidadeComprada())
         );
+
+        // 2. Limpa os registros antigos (O JPA vai deletar do banco devido ao orphanRemoval)
+        pedido.getPecas().clear();
+        pedido.getParcelas().clear();
+
+        // 3. Atualiza os dados básicos
+        pedido.setMetodoPagamento(dto.metodoPagamento());
+        double valorTotal = 0.0;
+
+        // 4. Processa os novos itens e reduz o estoque novamente
+        for (ItemPedidoRequestDTO itemDto : dto.itens()) {
+            Produto produtoAtualizado = produtoService.reduzirEstoque(itemDto.produtoId(), itemDto.quantidade());
+
+            ItemPedido item = new ItemPedido();
+            item.setPedido(pedido);
+            item.setProduto(produtoAtualizado);
+            item.setQuantidadeComprada(itemDto.quantidade());
+            item.setPrecoUnitarioNoMomento(produtoAtualizado.getPrecoAtual());
+
+            pedido.getPecas().add(item);
+            valorTotal += (produtoAtualizado.getPrecoAtual() * itemDto.quantidade());
+        }
+
+        pedido.setValorTotalPedido(valorTotal);
+
+        // 5. Recalcula as parcelas
+        pedido.getParcelas().addAll(gerarParcelas(pedido, dto.quantidadeDeParcelas()));
+
+        pedido = pedidoRepository.save(pedido);
+        return mapToResponseDTO(pedido);
     }
 
     private List<Parcela> gerarParcelas(PedidoCliente pedido, int quantidadeDeParcelas) {
@@ -92,5 +127,43 @@ public class PedidoClienteService {
             parcelas.add(parcela);
         }
         return parcelas;
+    }
+
+    @Transactional
+    public void deletarPedido(UUID id) {
+        PedidoCliente pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+
+        // Devolve os produtos ao estoque antes de deletar
+        pedido.getPecas().forEach(item ->
+                produtoService.restaurarEstoque(item.getProduto().getId(), item.getQuantidadeComprada())
+        );
+
+        pedidoRepository.delete(pedido);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PedidoResponseDTO> listarPorMes(int ano, int mes) {
+        return pedidoRepository.findByMesEAno(ano, mes).stream()
+                .map(this::mapToResponseDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PedidoResponseDTO> listarPorCliente(UUID clienteId) {
+        return pedidoRepository.findByClienteId(clienteId).stream()
+                .map(this::mapToResponseDTO)
+                .toList();
+    }
+
+    private PedidoResponseDTO mapToResponseDTO(PedidoCliente pedido) {
+        return new PedidoResponseDTO(
+                pedido.getId(),
+                pedido.getCliente().getNome(),
+                pedido.getValorTotalPedido(),
+                pedido.getDataPedido(),
+                pedido.getMetodoPagamento(),
+                pedido.isEmAberto()
+        );
     }
 }
