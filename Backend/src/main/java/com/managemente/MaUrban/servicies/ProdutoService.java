@@ -56,6 +56,14 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
+    @Transactional
+    public Produto removerEstoque(UUID id, int quantidade) { // Para quando a loja devolve itens ao fornecedor
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+        produto.setQuantEstoque(produto.getQuantEstoque() - quantidade);
+        return produtoRepository.save(produto);
+    }
+
     private ProdutoResponseDTO mapToDTO(Produto p) {
         return new ProdutoResponseDTO(p.getId(), p.getNome(), p.getPrecoAtual(), p.getQuantEstoque());
     }
