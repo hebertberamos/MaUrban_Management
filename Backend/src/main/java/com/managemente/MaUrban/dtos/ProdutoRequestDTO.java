@@ -1,4 +1,6 @@
 package com.managemente.MaUrban.dtos;
 
-public record ProdutoRequestDTO(String nome, double precoAtual, int quantEstoque) {
+import com.managemente.MaUrban.entities.enums.Tamanho;
+
+public record ProdutoRequestDTO(String nome, double precoAtual, int quantEstoque, Tamanho tamanho) {
 }

@@ -47,10 +47,10 @@ public class PedidoClienteService {
             item.setPedido(pedido);
             item.setProduto(produtoAtualizado);
             item.setQuantidadeComprada(itemDto.quantidade());
-            item.setPrecoUnitarioNoMomento(produtoAtualizado.getPrecoAtual());
+            item.setPrecoUnitarioNoMomento(produtoAtualizado.getPrecoVenda());
 
             itens.add(item);
-            valorTotal += (produtoAtualizado.getPrecoAtual() * itemDto.quantidade());
+            valorTotal += (produtoAtualizado.getPrecoVenda() * itemDto.quantidade());
         }
 
         pedido.setPecas(itens);
@@ -92,10 +92,10 @@ public class PedidoClienteService {
             item.setPedido(pedido);
             item.setProduto(produtoAtualizado);
             item.setQuantidadeComprada(itemDto.quantidade());
-            item.setPrecoUnitarioNoMomento(produtoAtualizado.getPrecoAtual());
+            item.setPrecoUnitarioNoMomento(produtoAtualizado.getPrecoVenda());
 
             pedido.getPecas().add(item);
-            valorTotal += (produtoAtualizado.getPrecoAtual() * itemDto.quantidade());
+            valorTotal += (produtoAtualizado.getPrecoVenda() * itemDto.quantidade());
         }
 
         pedido.setValorTotalPedido(valorTotal);

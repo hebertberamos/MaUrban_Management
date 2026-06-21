@@ -40,7 +40,7 @@ public class PedidoClienteController {
         return ResponseEntity.ok(pedidoService.listarPorMes(ano, mes));
     }
 
-    @GetMapping("/cliente/{clienteId}")
+    @GetMapping("/id/{clienteId}")
     public ResponseEntity<List<PedidoResponseDTO>> listarPorCliente(@PathVariable UUID clienteId) {
         return ResponseEntity.ok(pedidoService.listarPorCliente(clienteId));
     }

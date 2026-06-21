@@ -22,6 +22,23 @@ public class ProdutoService {
         produto.setNome(dto.nome());
         produto.setPrecoAtual(dto.precoAtual());
         produto.setQuantEstoque(dto.quantEstoque());
+        produto.setTamanho(dto.tamanho());
+
+        produto.calcularPrecoVenda();
+
+        produto = produtoRepository.save(produto);
+        return mapToDTO(produto);
+    }
+
+    @Transactional
+    public ProdutoResponseDTO atualizarProduto(UUID id, ProdutoRequestDTO dto) {
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado com o ID: " + id));
+
+        produto.setNome(dto.nome());
+        produto.setPrecoAtual(dto.precoAtual());
+        produto.setPrecoVenda(dto.precoAtual() * 1.30);
+        produto.setQuantEstoque(dto.quantEstoque());
 
         produto = produtoRepository.save(produto);
         return mapToDTO(produto);
@@ -64,7 +81,9 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
+
+
     private ProdutoResponseDTO mapToDTO(Produto p) {
-        return new ProdutoResponseDTO(p.getId(), p.getNome(), p.getPrecoAtual(), p.getQuantEstoque());
+        return new ProdutoResponseDTO(p.getId(), p.getNome(), p.getPrecoAtual(), p.getPrecoVenda(), p.getQuantEstoque(), p.getTamanho());
     }
 }

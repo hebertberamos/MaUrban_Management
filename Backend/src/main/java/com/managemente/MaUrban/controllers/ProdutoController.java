@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -19,6 +20,15 @@ public class ProdutoController {
     @PostMapping
     public ResponseEntity<ProdutoResponseDTO> criar(@RequestBody ProdutoRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoService.criarProduto(dto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProdutoResponseDTO> atualizar(
+            @PathVariable UUID id,
+            @RequestBody ProdutoRequestDTO dto) {
+
+        ProdutoResponseDTO response = produtoService.atualizarProduto(id, dto);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
