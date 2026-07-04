@@ -3,6 +3,7 @@ import Layout from './Layout';
 import Dashboard from './Dashboard';
 import Clientes from './Clientes';
 import NovaVenda from './NovaVenda';
+import Estoque from './Estoque';
 
 export default function App() {
   return (
@@ -12,9 +13,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="clientes" element={<Clientes />} />
-          {/* Crie e adicione as outras telas aqui depois */}
-          <Route path="produtos" element={<div>Tela de Produtos</div>} />
-          <Route path="estoque" element={<div>Tela de Estoque</div>} />
+          <Route path="estoque" element={<Estoque />} />
           <Route path="compras" element={<div>Tela de Compras</div>} />
           <Route path="vendas" element={<div>Tela de Vendas</div>} />
           <Route path="/nova-venda" element={<NovaVenda />} />

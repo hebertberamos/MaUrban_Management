@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import './Layout.css'; // Vamos criar um CSS básico depois para posicionar tudo
+import './Layout.css'; 
 
 export default function Layout() {
   const location = useLocation();
@@ -8,7 +8,6 @@ export default function Layout() {
   const titulos = {
     '/': 'Dashboard',
     '/clientes': 'Clientes',
-    '/produtos': 'Produtos',
     '/estoque': 'Estoque',
     '/compras': 'Compras Loja',
     '/vendas': 'Vendas Clientes',
@@ -24,7 +23,6 @@ export default function Layout() {
         <nav className="menu">
           <Link to="/" className={location.pathname === '/' ? 'ativo' : ''}>Dashboard</Link>
           <Link to="/clientes" className={location.pathname === '/clientes' ? 'ativo' : ''}>Clientes</Link>
-          <Link to="/produtos" className={location.pathname === '/produtos' ? 'ativo' : ''}>Produtos</Link>
           <Link to="/estoque" className={location.pathname === '/estoque' ? 'ativo' : ''}>Estoque</Link>
           <Link to="/compras" className={location.pathname === '/compras' ? 'ativo' : ''}>Compras loja</Link>
           <Link to="/vendas" className={location.pathname === '/vendas' ? 'ativo' : ''}>Vendas clientes</Link>
