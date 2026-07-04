@@ -2,6 +2,7 @@ package com.managemente.MaUrban.servicies;
 
 import com.managemente.MaUrban.dtos.ClienteRequestDTO;
 import com.managemente.MaUrban.dtos.ClienteResponseDTO;
+import com.managemente.MaUrban.dtos.ClienteResumoDTO;
 import com.managemente.MaUrban.entities.Cliente;
 import com.managemente.MaUrban.repositories.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +62,9 @@ public class ClienteService {
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID: " + id));
 
         clienteRepository.delete(cliente);
+    }
+
+    public List<ClienteResumoDTO> listarClientesComDebito() {
+        return clienteRepository.findTodosClientesComResumoDebito();
     }
 }

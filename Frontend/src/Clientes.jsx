@@ -10,7 +10,7 @@ export default function Clientes() {
   useEffect(() => {
     const buscarClientes = async () => {
       try {
-        const resposta = await fetch('http://localhost:8080/api/clientes');
+        const resposta = await fetch('http://localhost:8080/api/clientes/debito/total');
         if (resposta.ok) {
           const dados = await resposta.json();
           setClientes(dados);
@@ -79,21 +79,15 @@ export default function Clientes() {
             clientesFiltrados.map((cliente) => (
               <div key={cliente.id} className="cliente-item">
                 
-                {/* Lado Esquerdo do Item */}
                 <div className="cliente-info-principal">
                   <h3 className="cliente-nome">{cliente.nome}</h3>
-                  {/* VALOR MOCKADO: Ajustaremos o back-end para enviar isso depois */}
-                  <span className="cliente-valor-total">{formatarMoeda(5400.00)}</span>
-                </div>
-
-                {/* Lado Direito do Item */}
-                <div className="cliente-info-parcelas">
-                  <span className="label-parcelas">Parcelas</span>
-                  {/* VALOR MOCKADO */}
-                  <span className="cliente-valor-parcela">
-                    {formatarMoeda(900.00)} <span className="qtd-parcelas">6x</span>
+                  {/* Agora o valor vem real da sua API */}
+                  <span className="cliente-valor-total">
+                    Valor total em débito: {formatarMoeda(cliente.valorTotalDebito)}
                   </span>
                 </div>
+
+                {/* O bloco da direita foi completamente removido, seguindo o novo protótipo */}
 
               </div>
             ))
