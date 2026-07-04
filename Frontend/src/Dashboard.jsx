@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 
 export default function Dashboard() {
+  const navigate = useNavigate(); // Hook do React Router para navegação programática
   // Estados para guardar os dados que virão da API
   const [resumo, setResumo] = useState({ totalAReceber: 0, totalAPagar: 0, totalJaRecebido: 0 });
   const [pagamentos, setPagamentos] = useState([]);
@@ -85,7 +87,12 @@ export default function Dashboard() {
         </div>
 
         <div className="action-buttons">
-          <button className="btn-dark">Registrar venda</button>
+          <button 
+            className="btn-dark"
+            onClick={() => navigate('/nova-venda')}
+            >
+              Registrar venda
+          </button>
           <button className="btn-dark">Registrar compra</button>
         </div>
       </div>
@@ -95,7 +102,7 @@ export default function Dashboard() {
         
         <div className="pagamentos-scroll-area">
           {pagamentos.length === 0 ? (
-             <p className="sem-dados">Nenhum pagamento registrado para o mês de {obterNomeMes()}.</p>
+             <p className="sem-dados">Nenhum pagamento registrado para o mês de {obterNomeMes(dataAlvo)}.</p>
           ) : (
             pagamentos.map((pagamento) => (
               <div 

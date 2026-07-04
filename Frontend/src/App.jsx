@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './Layout';
 import Dashboard from './Dashboard';
 import Clientes from './Clientes';
+import NovaVenda from './NovaVenda';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="estoque" element={<div>Tela de Estoque</div>} />
           <Route path="compras" element={<div>Tela de Compras</div>} />
           <Route path="vendas" element={<div>Tela de Vendas</div>} />
+          <Route path="/nova-venda" element={<NovaVenda />} />
         </Route>
       </Routes>
     </BrowserRouter>
