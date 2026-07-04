@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Estoque.css';
 
 export default function Estoque() {
+    const navigate = useNavigate();
   const [produtos, setProdutos] = useState([]);
   const [busca, setBusca] = useState('');
   const [filtro, setFiltro] = useState('');
@@ -43,7 +45,12 @@ export default function Estoque() {
       {/* Cabeçalho da área com botões e filtros idêntico a Clientes */}
       <div className="estoque-header">
         <div className="estoque-acoes-topo">
-          <button className="btn-novo-produto">Novo produto</button>
+          <button 
+            className="btn-novo-produto"
+            onClick={() => navigate('/novo-produto')}
+            >
+                Novo produto
+            </button>
         </div>
         
         <div className="estoque-filtros">
