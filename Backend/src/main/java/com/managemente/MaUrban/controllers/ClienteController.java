@@ -14,6 +14,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/clientes")
 @RequiredArgsConstructor
+@CrossOrigin("*") // Permite requisições do React
 public class ClienteController {
 
     private final ClienteService clienteService;

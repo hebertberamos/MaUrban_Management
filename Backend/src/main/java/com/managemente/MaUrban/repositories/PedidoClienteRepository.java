@@ -15,4 +15,13 @@ public interface PedidoClienteRepository extends JpaRepository<PedidoCliente, UU
     List<PedidoCliente> findByMesEAno(@Param("ano") int ano, @Param("mes") int mes);
 
     List<PedidoCliente> findByClienteId(UUID clienteId);
+
+    @Query("SELECT COALESCE(SUM(pa.valorParcela), 0) FROM PedidoCliente p JOIN p.parcelas pa WHERE YEAR(pa.dataVencimento) = :ano AND MONTH(pa.dataVencimento) = :mes AND pa.status = 'PENDENTE'")
+    Double somarTotalAReceber(@Param("ano") int ano, @Param("mes") int mes);
+
+    @Query("SELECT COALESCE(SUM(pa.valorParcela), 0) FROM PedidoCliente p JOIN p.parcelas pa WHERE YEAR(pa.dataVencimento) = :ano AND MONTH(pa.dataVencimento) = :mes AND pa.status = 'PAGO'")
+    Double somarTotalJaRecebido(@Param("ano") int ano, @Param("mes") int mes);
+
+    @Query("SELECT DISTINCT p FROM PedidoCliente p JOIN p.parcelas pa WHERE YEAR(pa.dataVencimento) = :ano AND MONTH(pa.dataVencimento) = :mes")
+    List<PedidoCliente> findPedidosComParcelasNoMes(@Param("ano") int ano, @Param("mes") int mes);
 }
