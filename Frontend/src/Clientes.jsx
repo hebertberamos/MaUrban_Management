@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Clientes.css';
 
 export default function Clientes() {
+  const navigate = useNavigate();
   const [clientes, setClientes] = useState([]);
   const [busca, setBusca] = useState('');
   // Estado para o filtro (ainda definiremos a regra de negócio no back-end)
@@ -77,7 +79,7 @@ export default function Clientes() {
             <p className="sem-dados">Nenhum cliente encontrado.</p>
           ) : (
             clientesFiltrados.map((cliente) => (
-              <div key={cliente.id} className="cliente-item">
+              <div key={cliente.id} className="cliente-item" onClick={() => navigate(`/clientes/${cliente.id}`)} style={{ cursor: 'pointer' }}>
                 
                 <div className="cliente-info-principal">
                   <h3 className="cliente-nome">{cliente.nome}</h3>

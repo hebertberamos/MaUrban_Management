@@ -36,12 +36,12 @@ public class PedidoClienteController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/mes/{ano}/{mes}")
-    public ResponseEntity<List<PedidoResponseDTO>> listarPorMes(@PathVariable int ano, @PathVariable int mes) {
+    @GetMapping("/mes")
+    public ResponseEntity<List<PedidoResponseDTO>> listarPorMes(@RequestParam int ano, @RequestParam int mes) {
         return ResponseEntity.ok(pedidoService.listarPorMes(ano, mes));
     }
 
-    @GetMapping("/id/{clienteId}")
+    @GetMapping("/{clienteId}")
     public ResponseEntity<List<PedidoResponseDTO>> listarPorCliente(@PathVariable UUID clienteId) {
         return ResponseEntity.ok(pedidoService.listarPorCliente(clienteId));
     }

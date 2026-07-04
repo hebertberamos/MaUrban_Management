@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './NovaVenda.css';
 
 export default function NovaVenda() {
+  const navigate = useNavigate();      
   const [clientes, setClientes] = useState([]);
   const [produtos, setProdutos] = useState([]);
   
@@ -197,7 +199,13 @@ export default function NovaVenda() {
 
         {/* BLOCO 3: Botão de Envio */}
         <div className="form-actions">
-          <button type="button" className="btn-outline">Cancelar</button>
+          <button 
+            type="button" 
+            className="btn-outline"
+            onClick={() => navigate('/vendas')}
+          >
+            Cancelar
+          </button>
           <button type="submit" className="btn-dark">Finalizar Venda</button>
         </div>
 

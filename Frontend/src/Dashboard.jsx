@@ -93,7 +93,12 @@ export default function Dashboard() {
             >
               Registrar venda
           </button>
-          <button className="btn-dark">Registrar compra</button>
+          <button 
+            className="btn-dark"
+            onClick={() => navigate('/nova-compra')}
+            >
+              Registrar compra
+            </button>
         </div>
       </div>
 
