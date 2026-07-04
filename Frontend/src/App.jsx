@@ -5,6 +5,8 @@ import Clientes from './Clientes';
 import NovaVenda from './NovaVenda';
 import Estoque from './Estoque';
 import NovoProduto from './NovoProduto';
+import ComprasLoja from './ComprasLoja';
+import NovaCompra from './NovaCompra';
 
 export default function App() {
   return (
@@ -15,10 +17,11 @@ export default function App() {
           <Route index element={<Dashboard />} />
           <Route path="clientes" element={<Clientes />} />
           <Route path="estoque" element={<Estoque />} />
-          <Route path="compras" element={<div>Tela de Compras</div>} />
+          <Route path="compras" element={<ComprasLoja />} />
           <Route path="vendas" element={<div>Tela de Vendas</div>} />
           <Route path="/nova-venda" element={<NovaVenda />} />
           <Route path="/novo-produto" element={<NovoProduto />} />
+          <Route path="/nova-compra" element={<NovaCompra />} />
         </Route>
       </Routes>
     </BrowserRouter>
