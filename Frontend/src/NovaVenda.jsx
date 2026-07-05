@@ -6,6 +6,8 @@ export default function NovaVenda() {
   const navigate = useNavigate();      
   const [clientes, setClientes] = useState([]);
   const [produtos, setProdutos] = useState([]);
+
+// E depois enviar 'dadosParaEnvio' no fetch
   
   // Estado que reflete exatamente a estrutura do seu DTO/JSON
   const [pedido, setPedido] = useState({
@@ -16,6 +18,11 @@ export default function NovaVenda() {
       { produtoId: '', quantidade: 1 } // Começa com 1 item vazio
     ]
   });
+
+    const dadosParaEnvio = {
+  ...pedido,
+  quantidadeDeParcelas: pedido.metodoPagamento === 'PROMISSORIA' ? pedido.quantidadeDeParcelas : 1
+};
 
   // Busca clientes e produtos ao carregar a tela
   useEffect(() => {
@@ -129,24 +136,27 @@ export default function NovaVenda() {
                 value={pedido.metodoPagamento}
                 onChange={(e) => setPedido({...pedido, metodoPagamento: e.target.value})}
               >
-                <option value="CARTAO_CREDITO">Cartão de Crédito</option>
-                <option value="CARTAO_DEBITO">Cartão de Débito</option>
+                <option value="CARTAO">Cartão</option>
                 <option value="PIX">PIX</option>
                 <option value="DINHEIRO">Dinheiro</option>
+                <option value="PROMISSORIA">Promissória</option>
               </select>
             </div>
 
-            <div className="form-group flex-1">
-              <label>Parcelas</label>
-              <input 
-                type="number" 
-                className="form-input"
-                min="1"
-                max="12"
-                value={pedido.quantidadeDeParcelas}
-                onChange={(e) => setPedido({...pedido, quantidadeDeParcelas: parseInt(e.target.value) || 1})}
-              />
-            </div>
+            {/* O campo de parcelas SÓ aparece se o método for PROMISSORIA */}
+            {pedido.metodoPagamento === 'PROMISSORIA' && (
+              <div className="form-group flex-1">
+                <label>Qtd. de Parcelas</label>
+                <input 
+                  type="number" 
+                  className="form-input"
+                  min="1"
+                  max="24"
+                  value={pedido.quantidadeDeParcelas}
+                  onChange={(e) => setPedido({...pedido, quantidadeDeParcelas: parseInt(e.target.value) || 1})}
+                />
+              </div>
+            )}
           </div>
         </div>
 

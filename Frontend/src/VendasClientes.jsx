@@ -48,14 +48,21 @@ export default function VendasClientes() {
 
   const formatarMetodoPagamento = (metodo) => {
     switch (metodo) {
-      case 'CARTAO_CREDITO':
-        return 'Cartão de crédito';
-      case 'PIX':
+      case 'CARTAO': 
+        return 'Cartão';
+      case 'PROMISSORIA': 
+        return 'Promissória';
+      case 'PIX': 
         return 'PIX';
-      case 'DINHEIRO':
+      case 'DINHEIRO': 
         return 'Dinheiro';
-      case 'CARTAO_DEBITO':
-        return 'Cartão de débito';
+      
+      // Mantemos os antigos caso você tenha dados legados no banco de dados 
+      // de vendas feitas antes dessa alteração:
+      case 'CARTAO_CREDITO': 
+        return 'Cartão de crédito';
+      case 'CREDIARIO': 
+        return 'Crediário';
       default:
         return metodo;
     }

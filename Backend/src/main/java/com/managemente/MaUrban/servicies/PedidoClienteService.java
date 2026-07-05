@@ -57,9 +57,11 @@ public class PedidoClienteService {
         pedido.setPecas(itens);
         pedido.setValorTotalPedido(valorTotal);
 
-        // 4. Gera as parcelas financeiras
-        List<Parcela> parcelas = gerarParcelas(pedido, dto.quantidadeDeParcelas());
-        pedido.setParcelas(parcelas);
+        // 4. Gera as parcelas financeiras - caso a forma de pagamento seja na promissoria
+        if(pedido.getMetodoPagamento() == MetodoPagamento.PROMISSORIA) {
+            List<Parcela> parcelas = gerarParcelas(pedido, dto.quantidadeDeParcelas());
+            pedido.setParcelas(parcelas);
+        }
 
         // 5. Salva tudo no banco (CascadeType.ALL fará o Hibernate salvar itens e parcelas automaticamente)
         pedido = pedidoRepository.save(pedido);
@@ -118,8 +120,8 @@ public class PedidoClienteService {
             parcela.setValorParcela(valorDaParcela);
             parcela.setDataVencimento(LocalDate.now().plusMonths(i));
 
-            // Se for PIX ou Dinheiro, já entra como PAGO e com data de hoje
-            if (pedido.getMetodoPagamento() == MetodoPagamento.PIX || pedido.getMetodoPagamento() == MetodoPagamento.DINHEIRO) {
+            // Se for PIX, Dinheiro ou Cartão, já entra como PAGO e com data de hoje
+            if (pedido.getMetodoPagamento() == MetodoPagamento.PIX || pedido.getMetodoPagamento() == MetodoPagamento.DINHEIRO || pedido.getMetodoPagamento() == MetodoPagamento.CARTAO) {
                 parcela.setStatus(StatusPagamento.PAGO);
                 parcela.setDataPagamento(LocalDate.now());
             } else {
