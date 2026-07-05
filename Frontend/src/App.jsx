@@ -9,6 +9,7 @@ import ComprasLoja from './ComprasLoja';
 import NovaCompra from './NovaCompra';
 import VendasClientes from './VendasClientes';
 import DetalhesCliente from './DetalhesCliente';
+import NovoCliente from './NovoCliente';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/novo-produto" element={<NovoProduto />} />
           <Route path="/nova-compra" element={<NovaCompra />} />
           <Route path="/clientes/:id" element={<DetalhesCliente />} />
+          <Route path="/novo-cliente" element={<NovoCliente />} />
           
         </Route>
       </Routes>

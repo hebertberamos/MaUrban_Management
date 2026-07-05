@@ -40,7 +40,10 @@ export default function Clientes() {
       {/* Cabeçalho da área com botões e filtros */}
       <div className="clientes-header">
         <div className="clientes-acoes-topo">
-          <button className="btn-novo-cliente">Novo cliente</button>
+          <button 
+            className="btn-novo-cliente" 
+            onClick={() => navigate('/novo-cliente')}>
+            Novo cliente</button>
         </div>
         
         <div className="clientes-filtros">
