@@ -1,6 +1,7 @@
 package com.managemente.MaUrban.servicies;
 
 import com.managemente.MaUrban.dtos.ItemPedidoRequestDTO;
+import com.managemente.MaUrban.dtos.ItemPedidoResponseDTO;
 import com.managemente.MaUrban.dtos.PedidoClienteRequestDTO;
 import com.managemente.MaUrban.dtos.PedidoResponseDTO;
 import com.managemente.MaUrban.entities.*;
@@ -163,7 +164,18 @@ public class PedidoClienteService {
                 pedido.getValorTotalPedido(),
                 pedido.getDataPedido(),
                 pedido.getMetodoPagamento(),
-                pedido.isEmAberto()
+                pedido.isEmAberto(),
+                pedido.getPecas().stream()
+                        .map(this::mapToItemPedidoResponseDTO).toList()
+        );
+    }
+
+    private ItemPedidoResponseDTO mapToItemPedidoResponseDTO(ItemPedido item) {
+        return new ItemPedidoResponseDTO(
+                item.getId(),
+                item.getProduto().getNome(),
+                item.getPrecoUnitarioNoMomento(),
+                item.getQuantidadeComprada()
         );
     }
 }

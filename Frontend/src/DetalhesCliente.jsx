@@ -93,6 +93,22 @@ export default function DetalhesCliente() {
                   <span className="venda-data">{formatarData(pedido.dataPedido)}</span>
                 </div>
 
+                {/* Lista de Itens do Pedido */}
+                {pedido.itens && pedido.itens.length > 0 && (
+                  <div className="venda-itens-lista">
+                    <h4 className="titulo-itens">Produtos:</h4>
+                    {pedido.itens.map((item) => (
+                      <div key={item.itemId} className="item-detalhe">
+                        <span className="item-nome">
+                          {item.quantidadeComprada}x | {item.nomeProduto} | {formatarMoeda(item.valorProduto)}
+                        </span>
+                        {/* <span className="item-valor">
+                        </span> */}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="venda-linha-inferior">
                   <span className="venda-detalhes">
                     Total: {formatarMoeda(pedido.valorTotal)} | {formatarMetodoPagamento(pedido.metodoPagamento)}
