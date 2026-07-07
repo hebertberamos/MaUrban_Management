@@ -1,5 +1,6 @@
 package com.managemente.MaUrban.entities;
 
+import com.managemente.MaUrban.entities.enums.MetodoPagamento;
 import com.managemente.MaUrban.entities.enums.StatusPagamento;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,8 +49,11 @@ public abstract class Pedido {
     }
 
     @Transient
-    public boolean isEmAberto() {
-        return getValorJaPago() < valorTotalPedido;
+    public boolean isEmAberto(MetodoPagamento metodoPagamento) {
+        if(metodoPagamento.equals(MetodoPagamento.PROMISSORIA)) {
+            return getValorJaPago() < valorTotalPedido;
+        }
+        return false;
     }
 
 }

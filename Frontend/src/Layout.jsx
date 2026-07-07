@@ -11,7 +11,11 @@ export default function Layout() {
     '/clientes': 'Clientes',
     '/estoque': 'Estoque',
     '/compras': 'Compras Loja',
-    '/vendas': 'Vendas Clientes',
+    '/vendas': 'Vendas Clientes', 
+    '/nova-venda': 'Nova Venda',
+    '/novo-produto': 'Novo Produto',
+    '/nova-compra': 'Nova Compra',
+    '/novo-cliente': 'Novo Cliente'
   };
 
   const tituloAtual = titulos[location.pathname] || 'Sistema';

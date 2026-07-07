@@ -22,11 +22,11 @@ export default function App() {
           <Route path="estoque" element={<Estoque />} />
           <Route path="compras" element={<ComprasLoja />} />
           <Route path="vendas" element={<VendasClientes />} />
-          <Route path="/nova-venda" element={<NovaVenda />} />
-          <Route path="/novo-produto" element={<NovoProduto />} />
-          <Route path="/nova-compra" element={<NovaCompra />} />
-          <Route path="/clientes/:id" element={<DetalhesCliente />} />
-          <Route path="/novo-cliente" element={<NovoCliente />} />
+          <Route path="nova-venda" element={<NovaVenda />} />
+          <Route path="novo-produto" element={<NovoProduto />} />
+          <Route path="nova-compra" element={<NovaCompra />} />
+          <Route path="clientes/:id" element={<DetalhesCliente />} />
+          <Route path="novo-cliente" element={<NovoCliente />} />
           
         </Route>
       </Routes>

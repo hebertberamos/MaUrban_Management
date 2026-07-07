@@ -166,7 +166,7 @@ public class PedidoClienteService {
                 pedido.getValorTotalPedido(),
                 pedido.getDataPedido(),
                 pedido.getMetodoPagamento(),
-                pedido.isEmAberto(),
+                pedido.isEmAberto(pedido.getMetodoPagamento()),
                 pedido.getPecas().stream()
                         .map(this::mapToItemPedidoResponseDTO).toList()
         );
