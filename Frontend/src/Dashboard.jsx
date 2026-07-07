@@ -8,7 +8,7 @@ export default function Dashboard() {
   const [resumo, setResumo] = useState({ totalAReceber: 0, totalAPagar: 0, totalJaRecebido: 0 });
   const [pagamentos, setPagamentos] = useState([]);
   const [parcelaSelecionada, setParcelaSelecionada] = useState(null); // Estado para controlar qual parcela está clicada (para a borda azul do seu Figma)
-  const [deslocamentoMes, setDeslocamentoMes] = useState(1); // Deslocamento de meses para teste, pode ser alterado para 0, -1, etc.
+  const [deslocamentoMes, setDeslocamentoMes] = useState(0); // Deslocamento de meses para teste, pode ser alterado para 0, -1, etc.
 
   // 1. Função única que calcula a data alvo com base no deslocamento de teste
   const obterDataAlvo = () => {
@@ -68,7 +68,7 @@ export default function Dashboard() {
       <div className="dashboard-top-section">
         <div className="cards-container">
           <div className="card">
-            <span>Total a receber</span>
+            <span>Total parcelas a receber</span>
             <h2>{formatarMoeda(resumo.totalAReceber)}</h2>
             <small>{textoMes}</small>
           </div>

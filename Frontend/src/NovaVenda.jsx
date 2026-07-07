@@ -12,7 +12,7 @@ export default function NovaVenda() {
   // Estado que reflete exatamente a estrutura do seu DTO/JSON
   const [pedido, setPedido] = useState({
     clienteId: '',
-    metodoPagamento: 'CARTAO_CREDITO', // Valor padrão
+    metodoPagamento: 'CARTAO', // Valor padrão
     quantidadeDeParcelas: 1,
     itens: [
       { produtoId: '', quantidade: 1 } // Começa com 1 item vazio
@@ -90,7 +90,7 @@ export default function NovaVenda() {
         // Limpa o formulário
         setPedido({
           clienteId: '',
-          metodoPagamento: 'CARTAO_CREDITO',
+          metodoPagamento: 'CARTAO',
           quantidadeDeParcelas: 1,
           itens: [{ produtoId: '', quantidade: 1 }]
         });

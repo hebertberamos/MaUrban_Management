@@ -1,6 +1,6 @@
 package com.managemente.MaUrban.controllers;
 
-import com.managemente.MaUrban.dtos.ParcelaDashboardDTO;
+import com.managemente.MaUrban.dtos.PagamentoDashboardDTO;
 import com.managemente.MaUrban.dtos.ResumoDashboardDTO;
 import com.managemente.MaUrban.servicies.DashboardService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class DashboardController {
     }
 
     @GetMapping("/pagamentos")
-    public ResponseEntity<List<ParcelaDashboardDTO>> listarPagamentosMensal(@RequestParam int ano, @RequestParam int mes) {
+    public ResponseEntity<List<PagamentoDashboardDTO>> listarPagamentosMensal(@RequestParam int ano, @RequestParam int mes) {
         return ResponseEntity.ok(dashboardService.listarPagamentosClientesMensal(ano, mes));
     }
 }
