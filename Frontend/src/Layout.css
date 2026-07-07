@@ -17,11 +17,18 @@
   height: 70px;
   display: flex;
   align-items: center;
+  gap: 12px;
   padding: 0 24px;
   font-size: 20px;
   font-weight: 500;
   color: #A68A64; /* Tom puxado para o dourado/marrom do logo MU */
   border-bottom: 1px solid #E5E5E5;
+}
+
+.logo-icon {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
 }
 
 .menu {

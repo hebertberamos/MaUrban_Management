@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import MaUrbanIcon from './assets/MaUrban-icon.svg';
 import './Layout.css'; 
 
 export default function Layout() {
@@ -19,7 +20,10 @@ export default function Layout() {
     <div className="layout-container">
       {/* Menu Lateral */}
       <aside className="sidebar">
-        <div className="logo-placeholder">MU MaUrban</div>
+        <div className="logo-placeholder">
+          <img src={MaUrbanIcon} alt="MaUrban" className="logo-icon" />
+          <span>MaUrban</span>
+        </div>
         <nav className="menu">
           <Link to="/" className={location.pathname === '/' ? 'ativo' : ''}>Dashboard</Link>
           <Link to="/clientes" className={location.pathname === '/clientes' ? 'ativo' : ''}>Clientes</Link>
