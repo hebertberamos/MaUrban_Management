@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// import './DetalhesCliente.css';
+import './DetalhesCliente.css';
 
 export default function DetalhesCliente() {
   const { id } = useParams(); // Pega o ID do cliente da URL
@@ -72,13 +72,35 @@ export default function DetalhesCliente() {
     }
   };
 
+  const handleDeletarPedido = async (id) => {
+    const confirmar = window.confirm("Tem certeza que deseja deletar este pedido por completo? O estoque dos produtos será devolvido.");
+    if (!confirmar) return;
+
+    try {
+      const resposta = await fetch(`http://localhost:8080/api/pedidos/cliente/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (resposta.ok) {
+        // Remove o pedido do estado local
+        setPedidos(pedidos.filter(pedido => pedido.id !== id));
+        alert("Pedido deletado com sucesso!");
+      } else {
+        alert("Erro ao deletar o pedido.");
+      }
+    } catch (error) {
+      console.error("Erro ao deletar pedido:", error);
+      alert("Erro ao conectar com o servidor.");
+    }
+  };
+
   return (
     <div className="detalhes-cliente-container">
       
       {/* Cabeçalho */}
       <div className="detalhes-cliente-header">
         <button className="btn-voltar" onClick={() => navigate('/clientes')}>
-          ← Voltar para Clientes
+          ← Voltar
         </button>
         <div className="titulo-cliente">
           <h2>Pedidos de {nomeCliente || 'Cliente'}</h2>
@@ -101,7 +123,16 @@ export default function DetalhesCliente() {
                   <h3 className={`venda-status ${pedido.emAberto ? 'status-pendente' : 'status-pago'}`}>
                     {pedido.emAberto ? 'Pagamento Pendente' : 'Pago'}
                   </h3>
-                  <span className="venda-data">{formatarData(pedido.dataPedido)}</span>
+                  <div className="venda-meta">
+                    <span className="venda-data">{formatarData(pedido.dataPedido)}</span>
+                    <button 
+                      className="btn-deletar-card"
+                      onClick={() => handleDeletarPedido(pedido.id)}
+                      title="Deletar pedido"
+                    >
+                      Deletar
+                    </button>
+                  </div>
                 </div>
 
                 {/* Lista de Itens do Pedido */}

@@ -83,7 +83,15 @@
 .venda-linha-superior {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.venda-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 .venda-status {
@@ -159,4 +167,33 @@
 .item-valor {
   color: #666;
   font-size: 13px;
+}
+
+/* --- BOTÃO DE DELETAR NO CARD --- */
+.venda-direita-card {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Espaço entre a data e a botão de delete */
+}
+
+.btn-deletar-card {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-deletar-card:hover {
+  background-color: #FEE2E2; /* Fundo vermelho bem clarinho */
+  transform: scale(1.1);
+}
+
+.btn-deletar-card:active {
+  transform: scale(0.95);
 }
