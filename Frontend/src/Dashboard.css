@@ -1,0 +1,174 @@
+/* src/Dashboard.css */
+.dashboard-top-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  gap: 20px;
+}
+
+.cards-container {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.card {
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  padding: 20px;
+  flex: 1; /* Faz todos os cards terem a mesma largura */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card span {
+  font-size: 13px;
+  color: #777;
+}
+
+.card h2 {
+  font-size: 24px;
+  color: #444;
+  font-weight: 400;
+}
+
+.card small {
+  font-size: 11px;
+  color: #999;
+}
+
+/* Botões da direita */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-dark {
+  background-color: #3A3A3A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 160px;
+}
+
+.btn-dark:hover {
+  background-color: #222222;
+}
+
+/* Preparação para a tabela */
+.lista-pagamentos-placeholder {
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  padding: 24px;
+  width: 100%;
+  max-width: 600px; /* Baseado no seu protótipo, a lista não ocupa a tela toda */
+}
+
+.lista-pagamentos-placeholder h3 {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 16px;
+}
+
+
+/* --- LISTA DE PAGAMENTOS --- */
+.lista-pagamentos-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.lista-pagamentos-container h3 {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.pagamentos-scroll-area {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px; /* Espaço para a barra de rolagem */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Scrollbar estilizada parecida com o Figma */
+.pagamentos-scroll-area::-webkit-scrollbar {
+  width: 8px;
+}
+.pagamentos-scroll-area::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  border-radius: 4px;
+}
+.pagamentos-scroll-area::-webkit-scrollbar-thumb {
+  background: #ccc; 
+  border-radius: 4px;
+}
+
+.pagamento-item {
+  background-color: #F8F9FA;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagamento-item:hover {
+  background-color: #F1F3F5;
+}
+
+/* O "Pulo do Gato": Borda azul do Figma quando clicado */
+.pagamento-item.selecionado {
+  border: 2px solid #0099FF;
+  background-color: #FFFFFF;
+}
+
+.pagamento-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nome-cliente {
+  font-size: 14px;
+  color: #666;
+}
+
+.valor-parcela {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.pagamento-status {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.status-pago {
+  color: #666; /* Cinza escuro como no Figma */
+}
+
+.status-nao-pago {
+  color: #999; /* Cinza mais claro para diferenciar */
+}
+
+.sem-dados {
+  color: #888;
+  font-style: italic;
+  font-size: 14px;
+}

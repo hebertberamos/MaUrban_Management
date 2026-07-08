@@ -15,4 +15,6 @@ public interface PedidoLojaRepository extends JpaRepository<PedidoLoja, UUID> {
     @Query("SELECT p FROM PedidoLoja p WHERE YEAR(p.dataPedido) = :ano AND MONTH(p.dataPedido) = :mes")
     List<PedidoLoja> findByMesEAno(@Param("ano") int ano, @Param("mes") int mes);
 
+    @Query("SELECT COALESCE(SUM(pa.valorParcela), 0) FROM PedidoLoja p JOIN p.parcelas pa WHERE YEAR(pa.dataVencimento) = :ano AND MONTH(pa.dataVencimento) = :mes AND pa.status = 'PENDENTE'")
+    Double somarTotalAPagar(@Param("ano") int ano, @Param("mes") int mes);
 }

@@ -1,0 +1,87 @@
+/* src/Layout.css */
+.layout-container {
+  display: flex;
+  height: 100vh; /* Ocupa 100% da altura da tela */
+}
+
+/* --- MENU LATERAL --- */
+.sidebar {
+  width: 240px;
+  background-color: #FFFFFF;
+  border-right: 1px solid #E5E5E5;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-placeholder {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #A68A64; /* Tom puxado para o dourado/marrom do logo MU */
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.logo-icon {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  gap: 8px;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #555555;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.menu a:hover {
+  background-color: #F0F0F0;
+}
+
+.menu a.ativo {
+  background-color: #333333; /* Fundo escuro do botão ativo no Figma */
+  color: #FFFFFF;
+}
+
+/* --- ÁREA PRINCIPAL --- */
+.main-content {
+  flex: 1; /* Faz a área principal ocupar todo o resto do espaço */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.top-header {
+  height: 70px;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E5E5E5;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+}
+
+.top-header h1 {
+  font-size: 20px;
+  font-weight: 400;
+  color: #333;
+}
+
+.page-content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto; /* Adiciona barra de rolagem se a tela ficar muito grande */
+}

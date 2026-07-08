@@ -7,6 +7,7 @@ import com.managemente.MaUrban.entities.ItemPedido;
 import com.managemente.MaUrban.entities.Parcela;
 import com.managemente.MaUrban.entities.PedidoLoja;
 import com.managemente.MaUrban.entities.Produto;
+import com.managemente.MaUrban.entities.enums.MetodoPagamento;
 import com.managemente.MaUrban.entities.enums.StatusPagamento;
 import com.managemente.MaUrban.repositories.PedidoLojaRepository;
 import lombok.RequiredArgsConstructor;
@@ -133,7 +134,7 @@ public class PedidoLojaService {
                 pedido.getValorTotalPedido(),
                 pedido.getDataPedido(),
                 pedido.getCartao(),
-                pedido.isEmAberto()
+                pedido.isEmAberto(MetodoPagamento.PROMISSORIA)
         );
     }
 }

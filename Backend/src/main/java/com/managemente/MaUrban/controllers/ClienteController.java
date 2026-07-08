@@ -2,6 +2,7 @@ package com.managemente.MaUrban.controllers;
 
 import com.managemente.MaUrban.dtos.ClienteRequestDTO;
 import com.managemente.MaUrban.dtos.ClienteResponseDTO;
+import com.managemente.MaUrban.dtos.ClienteResumoDTO;
 import com.managemente.MaUrban.servicies.ClienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/clientes")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ClienteController {
 
     private final ClienteService clienteService;
@@ -48,5 +50,11 @@ public class ClienteController {
     public ResponseEntity<Void> deletar(@PathVariable UUID id) {
         clienteService.deletarCliente(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Listagem de todos os clientes e valor em débito deles.
+    @GetMapping("/debito/total")
+    public ResponseEntity<List<ClienteResumoDTO>> listarClientesValorTotalEmDebito() {
+        return ResponseEntity.ok(clienteService.listarClientesComDebito());
     }
 }

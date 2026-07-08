@@ -1,0 +1,162 @@
+/* src/DetalhesCliente.css */
+.detalhes-cliente-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.detalhes-cliente-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.btn-voltar {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.btn-voltar:hover {
+  color: #222;
+  text-decoration: underline;
+}
+
+.titulo-cliente h2 {
+  font-size: 24px;
+  font-weight: 400;
+  color: #333;
+  margin: 0;
+}
+
+.detalhes-lista-wrapper {
+  flex: 1;
+  background-color: #FFFFFF;
+  padding: 0 16px;
+}
+
+.detalhes-lista-scroll {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding-right: 12px;
+}
+
+.detalhes-lista-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.detalhes-lista-scroll::-webkit-scrollbar-track {
+  background: #FFFFFF; 
+}
+.detalhes-lista-scroll::-webkit-scrollbar-thumb {
+  background: #555; 
+  border-radius: 10px;
+  border: 2px solid #FFFFFF; 
+}
+
+.sem-dados {
+  color: #666;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+/* --- ESTILO DO CARD (Reaproveitado) --- */
+.venda-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 0;
+  border-bottom: 1px solid #EAEAEA;
+}
+
+.venda-item:last-child {
+  border-bottom: none;
+}
+
+.venda-linha-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.venda-status {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.status-pendente {
+  color: #8A6D3B; /* Ocre/Alaranjado */
+}
+
+.status-pago {
+  color: #3C763D; /* Verde escuro */
+}
+
+.venda-data {
+  font-size: 15px;
+  color: #666;
+  font-weight: 400;
+}
+
+.venda-linha-inferior {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.venda-detalhes {
+  font-size: 16px;
+  color: #555;
+  font-weight: 400;
+}
+
+/* --- ESTILOS DOS ITENS DO PEDIDO --- */
+.venda-itens-lista {
+  background-color: #F8F9FA;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.titulo-itens {
+  font-size: 13px;
+  font-weight: 500;
+  color: #777;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.item-detalhe {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #444;
+  border-bottom: 1px dashed #E0E0E0;
+  padding-bottom: 6px;
+}
+
+.item-detalhe:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.item-nome {
+  font-weight: 400;
+}
+
+.item-valor {
+  color: #666;
+  font-size: 13px;
+}
