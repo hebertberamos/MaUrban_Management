@@ -1,14 +1,16 @@
 package com.managemente.MaUrban.servicies;
 
 import com.managemente.MaUrban.dtos.ParcelaResponseDTO;
+import com.managemente.MaUrban.entities.MovimentacaoCaixa;
 import com.managemente.MaUrban.entities.Parcela;
 import com.managemente.MaUrban.entities.enums.StatusPagamento;
+import com.managemente.MaUrban.entities.enums.TipoMovimentacao;
+import com.managemente.MaUrban.repositories.MovimentacaoCaixaRepository;
 import com.managemente.MaUrban.repositories.ParcelaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,9 +18,18 @@ import java.util.UUID;
 public class ParcelaService {
 
     private final ParcelaRepository parcelaRepository;
+    private final MovimentacaoCaixaRepository movimentacaoCaixaRepository;
+
+    public ParcelaResponseDTO pagamentoParcelaCliente(UUID id) {
+        return pagarParcela(id, TipoMovimentacao.ENTRADA);
+    }
+
+    public ParcelaResponseDTO pagamentoContaLoja(UUID id) {
+        return pagarParcela(id, TipoMovimentacao.SAIDA);
+    }
 
     @Transactional
-    public ParcelaResponseDTO pagarParcela(UUID id) {
+    private ParcelaResponseDTO pagarParcela(UUID id, TipoMovimentacao movimentacao) {
         Parcela parcela = parcelaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Parcela não encontrada"));
 
@@ -30,6 +41,21 @@ public class ParcelaService {
         parcela.setDataPagamento(LocalDate.now());
 
         parcela = parcelaRepository.save(parcela);
+
+        MovimentacaoCaixa movimentacaoCaixa = new MovimentacaoCaixa();
+        String descricaoMovimentacao = "";
+        if(movimentacao.equals(TipoMovimentacao.ENTRADA)) {
+            descricaoMovimentacao = "Entrada de captal - recebimento total de " + parcela.getValorParcela();
+        } else {
+            descricaoMovimentacao = "Saída de captal - pagamento total de " + parcela.getValorParcela();
+        }
+
+        movimentacaoCaixa.setDescricao(descricaoMovimentacao);
+        movimentacaoCaixa.setValor(parcela.getValorParcela());
+        movimentacaoCaixa.setTipoMovimentacao(movimentacao);
+        movimentacaoCaixa.setDataMovimentacao(LocalDate.now());
+
+        movimentacaoCaixaRepository.save(movimentacaoCaixa);
 
         return new ParcelaResponseDTO(
                 parcela.getId(),
