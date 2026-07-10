@@ -15,4 +15,9 @@ public class PedidoLoja extends Pedido {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Cartao cartao;
+
+    @Override
+    public String getIdentificadorOrigem() {
+        return "Cartão: " + this.getCartao();
+    }
 }

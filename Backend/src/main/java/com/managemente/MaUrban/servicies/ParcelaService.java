@@ -18,7 +18,7 @@ import java.util.UUID;
 public class ParcelaService {
 
     private final ParcelaRepository parcelaRepository;
-    private final MovimentacaoCaixaRepository movimentacaoCaixaRepository;
+    private final MovimentacaoCaixaService movimentacaoCaixaService;
 
     public ParcelaResponseDTO pagamentoParcelaCliente(UUID id) {
         return pagarParcela(id, TipoMovimentacao.ENTRADA);
@@ -42,20 +42,15 @@ public class ParcelaService {
 
         parcela = parcelaRepository.save(parcela);
 
-        MovimentacaoCaixa movimentacaoCaixa = new MovimentacaoCaixa();
         String descricaoMovimentacao = "";
         if(movimentacao.equals(TipoMovimentacao.ENTRADA)) {
-            descricaoMovimentacao = "Entrada de captal - recebimento total de " + parcela.getValorParcela();
+            String nome = parcela.getPedido().getIdentificadorOrigem();
+            descricaoMovimentacao = String.format("Recebimento de parcela - Cliente %s", nome, parcela.getValorParcela());
         } else {
-            descricaoMovimentacao = "Saída de captal - pagamento total de " + parcela.getValorParcela();
+            descricaoMovimentacao = String.format("Pagamento de despesa - Parcela %s", parcela.getPedido().getIdentificadorOrigem());
         }
 
-        movimentacaoCaixa.setDescricao(descricaoMovimentacao);
-        movimentacaoCaixa.setValor(parcela.getValorParcela());
-        movimentacaoCaixa.setTipoMovimentacao(movimentacao);
-        movimentacaoCaixa.setDataMovimentacao(LocalDate.now());
-
-        movimentacaoCaixaRepository.save(movimentacaoCaixa);
+        movimentacaoCaixaService.registrarMovimentacao(descricaoMovimentacao, parcela.getValorParcela(), movimentacao);
 
         return new ParcelaResponseDTO(
                 parcela.getId(),
