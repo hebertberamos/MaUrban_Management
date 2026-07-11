@@ -10,6 +10,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/parcelas")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class ParcelaController {
 
     private final ParcelaService parcelaService;
@@ -17,6 +18,12 @@ public class ParcelaController {
     @PutMapping("pagar/parcela-cliente/{id}")
     public ResponseEntity<ParcelaResponseDTO> registrarPagamentoParcelaCliente(@PathVariable UUID id) {
         ParcelaResponseDTO response = parcelaService.pagamentoParcelaCliente(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("estornar/parcela-cliente/{id}")
+    public ResponseEntity<ParcelaResponseDTO> estornarPagamentoParcelaCliente(@PathVariable UUID id) {
+        ParcelaResponseDTO response = parcelaService.estornarPagamentoParcelaCliente(id);
         return ResponseEntity.ok(response);
     }
 
