@@ -27,4 +27,13 @@ public class MovimentacaoCaixaService {
         repository.save(movimentacaoCaixa);
     }
 
+    // Novo método para listar movimentações por mês e ano com filtro opcional por tipo
+    public java.util.List<com.managemente.MaUrban.dtos.MovimentacaoCaixaResponseDTO> listarPorMesEAno(int ano, int mes, TipoMovimentacao tipo) {
+        var lista = repository.findByAnoAndMes(ano, mes);
+        if (tipo == null) return lista;
+        return lista.stream()
+                .filter(m -> m.tipoMovimentacao().equals(tipo))
+                .toList();
+    }
+
 }
