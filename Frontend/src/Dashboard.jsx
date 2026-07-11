@@ -5,7 +5,7 @@ import './Dashboard.css';
 export default function Dashboard() {
   const navigate = useNavigate(); // Hook do React Router para navegação programática
   // Estados para guardar os dados que virão da API
-  const [resumo, setResumo] = useState({ totalAReceber: 0, totalAPagar: 0, totalJaRecebido: 0 });
+  const [resumo, setResumo] = useState({ totalAReceber: 0, totalAPagar: 0, totalJaRecebido: 0, saldoCaixa: 0 });
   const [pagamentos, setPagamentos] = useState([]);
   const [parcelaSelecionada, setParcelaSelecionada] = useState(null); // Estado para controlar qual parcela está clicada (para a borda azul do seu Figma)
   const [deslocamentoMes, setDeslocamentoMes] = useState(0); // Deslocamento de meses para teste, pode ser alterado para 0, -1, etc.
@@ -84,7 +84,13 @@ export default function Dashboard() {
             <h2>{formatarMoeda(resumo.totalJaRecebido)}</h2>
             <small>{textoMes}</small>
           </div>
-        </div>
+
+              <div className="card">
+                <span>Caixa</span>
+                <h2>{formatarMoeda(resumo.saldoCaixa)}</h2>
+                <small>{textoMes}</small>
+              </div>
+            </div>
 
         <div className="action-buttons">
           <button 
@@ -103,7 +109,7 @@ export default function Dashboard() {
       </div>
 
       <div className="lista-pagamentos-container">
-        <h3>Lista de pagamentos</h3>
+        <h3>À receber</h3>
         
         <div className="pagamentos-scroll-area">
           {pagamentos.length === 0 ? (

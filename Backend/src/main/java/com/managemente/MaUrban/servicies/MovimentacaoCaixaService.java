@@ -5,6 +5,7 @@ import com.managemente.MaUrban.entities.enums.TipoMovimentacao;
 import com.managemente.MaUrban.repositories.MovimentacaoCaixaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -14,6 +15,7 @@ public class MovimentacaoCaixaService {
 
     private final MovimentacaoCaixaRepository repository;
 
+    @Transactional
     public void registrarMovimentacao(String descricao, double valor, TipoMovimentacao tipo) {
         MovimentacaoCaixa movimentacaoCaixa = new MovimentacaoCaixa();
 

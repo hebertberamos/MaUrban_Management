@@ -1,11 +1,9 @@
 package com.managemente.MaUrban.servicies;
 
 import com.managemente.MaUrban.dtos.ParcelaResponseDTO;
-import com.managemente.MaUrban.entities.MovimentacaoCaixa;
 import com.managemente.MaUrban.entities.Parcela;
 import com.managemente.MaUrban.entities.enums.StatusPagamento;
 import com.managemente.MaUrban.entities.enums.TipoMovimentacao;
-import com.managemente.MaUrban.repositories.MovimentacaoCaixaRepository;
 import com.managemente.MaUrban.repositories.ParcelaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +18,12 @@ public class ParcelaService {
     private final ParcelaRepository parcelaRepository;
     private final MovimentacaoCaixaService movimentacaoCaixaService;
 
+    @Transactional
     public ParcelaResponseDTO pagamentoParcelaCliente(UUID id) {
         return pagarParcela(id, TipoMovimentacao.ENTRADA);
     }
 
+    @Transactional
     public ParcelaResponseDTO pagamentoContaLoja(UUID id) {
         return pagarParcela(id, TipoMovimentacao.SAIDA);
     }
