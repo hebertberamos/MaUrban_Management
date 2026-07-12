@@ -3,6 +3,7 @@ package com.managemente.MaUrban.servicies;
 import com.managemente.MaUrban.dtos.PagamentoDashboardDTO;
 import com.managemente.MaUrban.dtos.ResumoDashboardDTO;
 import com.managemente.MaUrban.entities.PedidoCliente;
+import com.managemente.MaUrban.repositories.MovimentacaoCaixaRepository;
 import com.managemente.MaUrban.repositories.PedidoClienteRepository;
 import com.managemente.MaUrban.repositories.PedidoLojaRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,16 @@ public class DashboardService {
 
     private final PedidoClienteRepository pedidoClienteRepository;
     private final PedidoLojaRepository pedidoLojaRepository;
+    private final MovimentacaoCaixaRepository movimentacaoCaixaRepository;
 
     @Transactional(readOnly = true)
     public ResumoDashboardDTO obterResumo(int ano, int mes) {
         double receber = pedidoClienteRepository.somarTotalAReceber(ano, mes);
         double recebido = calcularTotalRecebidoNoMes(ano, mes);
         double pagar = pedidoLojaRepository.somarTotalAPagar(ano, mes);
+        double saldoCaixa = movimentacaoCaixaRepository.obterSaldoAtual();
 
-        return new ResumoDashboardDTO(receber, pagar, recebido);
+        return new ResumoDashboardDTO(receber, pagar, recebido, saldoCaixa);
     }
 
     @Transactional(readOnly = true)

@@ -56,4 +56,6 @@ public abstract class Pedido {
         return false;
     }
 
+    @Transient
+    public abstract String getIdentificadorOrigem();
 }

@@ -5,10 +5,10 @@ import './Dashboard.css';
 export default function Dashboard() {
   const navigate = useNavigate(); // Hook do React Router para navegação programática
   // Estados para guardar os dados que virão da API
-  const [resumo, setResumo] = useState({ totalAReceber: 0, totalAPagar: 0, totalJaRecebido: 0 });
+  const [resumo, setResumo] = useState({ totalAReceber: 0, totalAPagar: 0, totalJaRecebido: 0, saldoCaixa: 0 });
   const [pagamentos, setPagamentos] = useState([]);
   const [parcelaSelecionada, setParcelaSelecionada] = useState(null); // Estado para controlar qual parcela está clicada (para a borda azul do seu Figma)
-  const [deslocamentoMes, setDeslocamentoMes] = useState(0); // Deslocamento de meses para teste, pode ser alterado para 0, -1, etc.
+  const [deslocamentoMes, setDeslocamentoMes] = useState(0); // Deslocamento de meses para o mês selecionado no dashboard
 
   // 1. Função única que calcula a data alvo com base no deslocamento de teste
   const obterDataAlvo = () => {
@@ -18,6 +18,12 @@ export default function Dashboard() {
     return data;
   };
 
+  const obterNomeMesEAno = (data) => {
+    const nome = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(data);
+    return nome.charAt(0).toUpperCase() + nome.slice(1);
+  };
+
+  const opcoesMeses = Array.from({ length: 25 }, (_, index) => index - 12);
   // Armazena a nossa data base calculada para este ciclo de renderização
   const dataAlvo = obterDataAlvo();
 
@@ -32,9 +38,10 @@ export default function Dashboard() {
   // useEffect executa a busca assim que o componente é montado na tela
   useEffect(() => {
     const buscarDados = async () => {
-      const dataAtual = new Date();
-      const ano = dataAlvo.getFullYear();
-      const mes = dataAlvo.getMonth() + 1; // JS conta meses de 0 a 11, por isso o +1
+      const data = new Date();
+      data.setMonth(data.getMonth() + deslocamentoMes);
+      const ano = data.getFullYear();
+      const mes = data.getMonth() + 1; // JS conta meses de 0 a 11, por isso o +1
 
       try {
         // 1. Busca o resumo dos cards
@@ -56,49 +63,124 @@ export default function Dashboard() {
     };
 
     buscarDados();
-  }, [deslocamentoMes]); // O array vazio garante que rode apenas uma vez
+  }, [deslocamentoMes]); // Recarrega sempre que o mês selecionado mudar
 
   const formatarMoeda = (valor) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
+  };
+
+  const atualizarResumo = async () => {
+    const data = obterDataAlvo();
+    const ano = data.getFullYear();
+    const mes = data.getMonth() + 1;
+
+    try {
+      const respostaResumo = await fetch(`http://localhost:8080/api/dashboard/resumo?ano=${ano}&mes=${mes}`);
+      if (respostaResumo.ok) {
+        const dadosResumo = await respostaResumo.json();
+        setResumo(dadosResumo);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar resumo:', error);
+    }
+  };
+
+  const handlePagamentoClick = async (pagamento) => {
+    setParcelaSelecionada(pagamento.idParcela);
+
+    const isPago = pagamento.status === 'PAGO';
+    const endpoint = isPago
+      ? `http://localhost:8080/api/parcelas/estornar/parcela-cliente/${pagamento.idParcela}`
+      : `http://localhost:8080/api/parcelas/pagar/parcela-cliente/${pagamento.idParcela}`;
+
+    try {
+      const resposta = await fetch(endpoint, { method: 'PUT' });
+
+      if (!resposta.ok) {
+        console.error('Erro ao atualizar status da parcela:', resposta.statusText);
+        return;
+      }
+
+      const parcelaAtualizada = await resposta.json();
+
+      setPagamentos((prevPagamentos) =>
+        prevPagamentos.map((item) =>
+          item.idParcela === parcelaAtualizada.id
+            ? { ...item, status: parcelaAtualizada.status }
+            : item
+        )
+      );
+
+      await atualizarResumo();
+    } catch (error) {
+      console.error('Erro ao atualizar status da parcela:', error);
+    }
   };
 
   return (
     <div className="dashboard-container">
       
       <div className="dashboard-top-section">
-        <div className="cards-container">
-          <div className="card">
-            <span>Total parcelas a receber</span>
-            <h2>{formatarMoeda(resumo.totalAReceber)}</h2>
-            <small>{textoMes}</small>
-          </div>
-          
-          <div className="card">
-            <span>Total a pagar</span>
-            <h2>{formatarMoeda(resumo.totalAPagar)}</h2>
-            <small>{textoMes}</small>
-          </div>
-          
-          <div className="card">
-            <span>Total já recebido</span>
-            <h2>{formatarMoeda(resumo.totalJaRecebido)}</h2>
-            <small>{textoMes}</small>
-          </div>
+        <div className="dashboard-header">
+            <div className="month-selector">
+              <label htmlFor="mesSelecionado">Selecione o mês</label>
+              <select
+                id="mesSelecionado"
+                value={deslocamentoMes}
+                onChange={(event) => setDeslocamentoMes(Number(event.target.value))}
+              >
+                {opcoesMeses.map((offset) => {
+                  const data = new Date();
+                  data.setMonth(data.getMonth() + offset);
+                  return (
+                    <option key={offset} value={offset}>
+                      {obterNomeMesEAno(data)}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            <div className="action-buttons">
+              <button 
+                className="btn-dark"
+                onClick={() => navigate('/nova-venda')}
+              >
+                Registrar venda
+              </button>
+              <button 
+                className="btn-dark"
+                onClick={() => navigate('/nova-compra')}
+              >
+                Registrar compra
+              </button>
+            </div>
         </div>
 
-        <div className="action-buttons">
-          <button 
-            className="btn-dark"
-            onClick={() => navigate('/nova-venda')}
-            >
-              Registrar venda
-          </button>
-          <button 
-            className="btn-dark"
-            onClick={() => navigate('/nova-compra')}
-            >
-              Registrar compra
-            </button>
+        <div className="cards-container">
+            <div className="card">
+              <span>Total parcelas a receber</span>
+              <h2>{formatarMoeda(resumo.totalAReceber)}</h2>
+              <small>{textoMes}</small>
+            </div>
+          
+            <div className="card">
+              <span>Total a pagar</span>
+              <h2>{formatarMoeda(resumo.totalAPagar)}</h2>
+              <small>{textoMes}</small>
+            </div>
+          
+            <div className="card">
+              <span>Total já recebido</span>
+              <h2>{formatarMoeda(resumo.totalJaRecebido)}</h2>
+              <small>{textoMes}</small>
+            </div>
+
+            <div className="card">
+              <span>Caixa</span>
+              <h2>{formatarMoeda(resumo.saldoCaixa)}</h2>
+              <small>{textoMes}</small>
+            </div>
         </div>
       </div>
 
@@ -114,7 +196,7 @@ export default function Dashboard() {
                 key={pagamento.idParcela}
                 // Adiciona a classe 'selecionado' dinamicamente se for o item clicado
                 className={`pagamento-item ${parcelaSelecionada === pagamento.idParcela ? 'selecionado' : ''}`}
-                onClick={() => setParcelaSelecionada(pagamento.idParcela)}
+                onClick={() => handlePagamentoClick(pagamento)}
               >
                 <div className="pagamento-info">
                   <span className="nome-cliente">{pagamento.nomeCliente}</span>

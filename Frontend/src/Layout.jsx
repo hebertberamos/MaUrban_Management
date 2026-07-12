@@ -15,7 +15,8 @@ export default function Layout() {
     '/nova-venda': 'Nova Venda',
     '/novo-produto': 'Novo Produto',
     '/nova-compra': 'Nova Compra',
-    '/novo-cliente': 'Novo Cliente'
+    '/novo-cliente': 'Novo Cliente',
+    '/movimentacoes': 'Movimentações'
   };
 
   const tituloAtual = titulos[location.pathname] || 'Sistema';
@@ -34,6 +35,7 @@ export default function Layout() {
           <Link to="/estoque" className={location.pathname === '/estoque' ? 'ativo' : ''}>Estoque</Link>
           <Link to="/compras" className={location.pathname === '/compras' ? 'ativo' : ''}>Compras loja</Link>
           <Link to="/vendas" className={location.pathname === '/vendas' ? 'ativo' : ''}>Vendas clientes</Link>
+          <Link to="/movimentacoes" className={location.pathname === '/movimentacoes' ? 'ativo' : ''}>Movimentações</Link>
         </nav>
       </aside>
 

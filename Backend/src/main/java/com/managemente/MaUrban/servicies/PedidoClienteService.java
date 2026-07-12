@@ -7,6 +7,7 @@ import com.managemente.MaUrban.dtos.PedidoResponseDTO;
 import com.managemente.MaUrban.entities.*;
 import com.managemente.MaUrban.entities.enums.MetodoPagamento;
 import com.managemente.MaUrban.entities.enums.StatusPagamento;
+import com.managemente.MaUrban.entities.enums.TipoMovimentacao;
 import com.managemente.MaUrban.repositories.ClienteRepository;
 import com.managemente.MaUrban.repositories.PedidoClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,8 @@ public class PedidoClienteService {
 
     private final PedidoClienteRepository pedidoRepository;
     private final ClienteRepository clienteRepository;
-    private final ProdutoService produtoService; // Reaproveitamos a lógica de estoque
+    private final ProdutoService produtoService;
+    private final MovimentacaoCaixaService movimentacaoCaixaService;
 
     @Transactional
     public PedidoResponseDTO criarPedido(PedidoClienteRequestDTO dto) {
@@ -58,9 +60,13 @@ public class PedidoClienteService {
         pedido.setValorTotalPedido(valorTotal);
 
         // 4. Gera as parcelas financeiras - caso a forma de pagamento seja na promissoria
+        //    Gerar o fluxo de caixa de entrada - caso a forma de pagamento seja PIX, Dinheiro ou Cartao
         if(pedido.getMetodoPagamento() == MetodoPagamento.PROMISSORIA) {
             List<Parcela> parcelas = gerarParcelas(pedido, dto.quantidadeDeParcelas());
             pedido.setParcelas(parcelas);
+        }
+        else {
+            movimentacaoCaixaService.registrarMovimentacao(String.format("Recebimento à vista - Cliente %s", pedido.getIdentificadorOrigem()), pedido.getValorTotalPedido(), TipoMovimentacao.ENTRADA);
         }
 
         // 5. Salva tudo no banco (CascadeType.ALL fará o Hibernate salvar itens e parcelas automaticamente)
@@ -141,6 +147,11 @@ public class PedidoClienteService {
         pedido.getPecas().forEach(item ->
                 produtoService.restaurarEstoque(item.getProduto().getId(), item.getQuantidadeComprada())
         );
+
+        //Salvar no fluxo de caixa
+        if(pedido.getMetodoPagamento() != MetodoPagamento.PROMISSORIA) {
+            movimentacaoCaixaService.registrarMovimentacao(String.format("Reembolso compra a vista - Cliente %s", pedido.getIdentificadorOrigem()), pedido.getValorTotalPedido(), TipoMovimentacao.SAIDA);
+        }
 
         pedidoRepository.delete(pedido);
     }

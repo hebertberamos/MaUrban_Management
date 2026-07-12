@@ -18,4 +18,9 @@ public class PedidoCliente extends Pedido {
     @Enumerated(EnumType.STRING)
     @Column(name = "metodo_pagamento", nullable = false)
     private MetodoPagamento metodoPagamento;
+
+    @Override
+    public String getIdentificadorOrigem() {
+        return this.cliente.getNome();
+    }
 }
