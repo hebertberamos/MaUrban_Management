@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Estoque.css';
+import * as produtosService from '../../services/produtosService';
 
 export default function Estoque() {
     const navigate = useNavigate();
@@ -11,11 +12,8 @@ export default function Estoque() {
   useEffect(() => {
     const buscarProdutos = async () => {
       try {
-        const resposta = await fetch('http://localhost:8080/api/produtos');
-        if (resposta.ok) {
-          const dados = await resposta.json();
-          setProdutos(dados);
-        }
+        const dados = await produtosService.listarProdutos();
+        setProdutos(dados);
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
       }

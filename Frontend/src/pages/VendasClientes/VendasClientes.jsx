@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './VendasClientes.css';
+import * as pedidosService from '../../services/pedidosService';
 
 export default function VendasClientes() {
   const navigate = useNavigate();
@@ -16,18 +17,11 @@ export default function VendasClientes() {
     const buscarVendas = async () => {
       setCarregando(true);
       try {
-        const mesFormatado = String(mes).padStart(2, '0');
-        const url = `http://localhost:8080/api/pedidos/cliente/mes?ano=${ano}&mes=${mesFormatado}`;
-        
-        const resposta = await fetch(url);
-        if (resposta.ok) {
-          const dados = await resposta.json();
-          setVendas(dados);
-        } else {
-          setVendas([]);
-        }
+        const dados = await pedidosService.obterPedidosClientePorMes(ano, mes);
+        setVendas(dados);
       } catch (error) {
         console.error("Erro ao buscar vendas dos clientes:", error);
+        setVendas([]);
       } finally {
         setCarregando(false);
       }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
+import * as dashboardService from '../../services/dashboardService';
 
 export default function Dashboard() {
   const navigate = useNavigate(); // Hook do React Router para navegação programática
@@ -45,18 +46,12 @@ export default function Dashboard() {
 
       try {
         // 1. Busca o resumo dos cards
-        const respostaResumo = await fetch(`http://localhost:8080/api/dashboard/resumo?ano=${ano}&mes=${mes}`);
-        if (respostaResumo.ok) {
-          const dadosResumo = await respostaResumo.json();
-          setResumo(dadosResumo);
-        }
+        const dadosResumo = await dashboardService.obterResumo(ano, mes);
+        setResumo(dadosResumo);
 
         // 2. Busca a lista de pagamentos dos clientes
-        const respostaPagamentos = await fetch(`http://localhost:8080/api/dashboard/pagamentos?ano=${ano}&mes=${mes}`);
-        if (respostaPagamentos.ok) {
-          const dadosPagamentos = await respostaPagamentos.json();
-          setPagamentos(dadosPagamentos);
-        }
+        const dadosPagamentos = await dashboardService.obterPagamentos(ano, mes);
+        setPagamentos(dadosPagamentos);
       } catch (error) {
         console.error("Erro ao comunicar com a API:", error);
       }
@@ -75,11 +70,8 @@ export default function Dashboard() {
     const mes = data.getMonth() + 1;
 
     try {
-      const respostaResumo = await fetch(`http://localhost:8080/api/dashboard/resumo?ano=${ano}&mes=${mes}`);
-      if (respostaResumo.ok) {
-        const dadosResumo = await respostaResumo.json();
-        setResumo(dadosResumo);
-      }
+      const dadosResumo = await dashboardService.obterResumo(ano, mes);
+      setResumo(dadosResumo);
     } catch (error) {
       console.error('Erro ao atualizar resumo:', error);
     }
@@ -89,19 +81,11 @@ export default function Dashboard() {
     setParcelaSelecionada(pagamento.idParcela);
 
     const isPago = pagamento.status === 'PAGO';
-    const endpoint = isPago
-      ? `http://localhost:8080/api/parcelas/estornar/parcela-cliente/${pagamento.idParcela}`
-      : `http://localhost:8080/api/parcelas/pagar/parcela-cliente/${pagamento.idParcela}`;
 
     try {
-      const resposta = await fetch(endpoint, { method: 'PUT' });
-
-      if (!resposta.ok) {
-        console.error('Erro ao atualizar status da parcela:', resposta.statusText);
-        return;
-      }
-
-      const parcelaAtualizada = await resposta.json();
+      const parcelaAtualizada = isPago
+        ? await dashboardService.estornarParcela(pagamento.idParcela)
+        : await dashboardService.pagarParcela(pagamento.idParcela);
 
       setPagamentos((prevPagamentos) =>
         prevPagamentos.map((item) =>

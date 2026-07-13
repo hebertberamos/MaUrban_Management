@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import './NovaCompra.css';
+import * as produtosService from '../../services/produtosService';
+import * as pedidosService from '../../services/pedidosService';
 
 export default function NovaCompra() {
   const navigate = useNavigate();
@@ -19,10 +21,8 @@ export default function NovaCompra() {
   useEffect(() => {
     const carregarProdutos = async () => {
       try {
-        const resposta = await fetch('http://localhost:8080/api/produtos');
-        if (resposta.ok) {
-          setProdutos(await resposta.json());
-        }
+        const produtos = await produtosService.listarProdutos();
+        setProdutos(produtos);
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
       }
@@ -65,23 +65,13 @@ export default function NovaCompra() {
     }
 
     try {
-      const resposta = await fetch('http://localhost:8080/api/pedidos/loja', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(compra)
-      });
-
-      if (resposta.ok) {
-        alert("Compra da loja registrada com sucesso!");
-        navigate('/compras'); // Redireciona de volta para a lista de compras
-      } else {
-        alert("Erro ao registrar a compra.");
-      }
+      await pedidosService.criarPedidoLoja(compra);
+      
+      alert("Compra da loja registrada com sucesso!");
+      navigate('/compras'); // Redireciona de volta para a lista de compras
     } catch (error) {
       console.error("Erro na requisição:", error);
-      alert("Erro ao conectar com o servidor.");
+      alert("Erro ao registrar a compra.");
     }
   };
 

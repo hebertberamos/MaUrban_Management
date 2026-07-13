@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Clientes.css';
+import * as clientesService from '../../services/clientesService';
 
 export default function Clientes() {
   const navigate = useNavigate();
@@ -12,11 +13,8 @@ export default function Clientes() {
   useEffect(() => {
     const buscarClientes = async () => {
       try {
-        const resposta = await fetch('http://localhost:8080/api/clientes/debito/total');
-        if (resposta.ok) {
-          const dados = await resposta.json();
-          setClientes(dados);
-        }
+        const dados = await clientesService.listarClientesComDebito();
+        setClientes(dados);
       } catch (error) {
         console.error("Erro ao buscar clientes:", error);
       }

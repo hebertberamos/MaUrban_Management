@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -36,6 +36,6 @@ public class MovimentacaoCaixa {
     private TipoMovimentacao tipoMovimentacao; // ENTRADA ou SAIDA
 
     @Column(name = "data_movimentacao", nullable = false)
-    private LocalDate dataMovimentacao;
+    private LocalDateTime dataMovimentacao;
 
 }

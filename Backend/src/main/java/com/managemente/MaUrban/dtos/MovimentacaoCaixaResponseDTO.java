@@ -2,7 +2,7 @@ package com.managemente.MaUrban.dtos;
 
 import com.managemente.MaUrban.entities.enums.TipoMovimentacao;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record MovimentacaoCaixaResponseDTO(
@@ -10,6 +10,6 @@ public record MovimentacaoCaixaResponseDTO(
         String descricao,
         double valor,
         TipoMovimentacao tipoMovimentacao,
-        LocalDate dataMovimentacao
+        LocalDateTime dataMovimentacao
 ) {
 }

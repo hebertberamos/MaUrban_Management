@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NovoCliente.css';
+import * as clientesService from '../../services/clientesService';
 
 export default function NovoCliente() {
   const navigate = useNavigate();
@@ -19,23 +20,13 @@ export default function NovoCliente() {
     setCarregando(true);
 
     try {
-      const resposta = await fetch('http://localhost:8080/api/clientes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nome: nome.trim() })
-      });
-
-      if (resposta.ok) {
-        alert("Cliente cadastrado com sucesso!");
-        navigate('/clientes'); // Retorna para a listagem de clientes
-      } else {
-        alert("Erro ao cadastrar o cliente. Verifique os dados.");
-      }
+      await clientesService.criarCliente(nome);
+      
+      alert("Cliente cadastrado com sucesso!");
+      navigate('/clientes'); // Retorna para a listagem de clientes
     } catch (error) {
       console.error("Erro na requisição:", error);
-      alert("Erro ao conectar com o servidor.");
+      alert("Erro ao cadastrar o cliente. Verifique os dados.");
     } finally {
       setCarregando(false);
     }
