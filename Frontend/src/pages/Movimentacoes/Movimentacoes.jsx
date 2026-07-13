@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './Movimentacoes.css';
+import * as movimentacoesService from '../../services/movimentacoesService';
 
 export default function Movimentacoes() {
   const [movimentacoes, setMovimentacoes] = useState([]);
@@ -26,14 +27,8 @@ export default function Movimentacoes() {
   useEffect(() => {
     const buscar = async () => {
       try {
-        let url = `http://localhost:8080/api/movimentacoes?ano=${ano}&mes=${mes}`;
-        if (tipo && tipo !== 'ALL') url += `&tipo=${tipo}`;
-
-        const resposta = await fetch(url);
-        if (resposta.ok) {
-          const dados = await resposta.json();
-          setMovimentacoes(dados);
-        }
+        const dados = await movimentacoesService.obterMovimentacoes(ano, mes, tipo);
+        setMovimentacoes(dados);
       } catch (error) {
         console.error('Erro ao buscar movimentações:', error);
       }

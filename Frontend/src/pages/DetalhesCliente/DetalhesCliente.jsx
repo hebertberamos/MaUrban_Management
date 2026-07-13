@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './DetalhesCliente.css';
+import * as pedidosService from '../../services/pedidosService';
 
 export default function DetalhesCliente() {
   const { id } = useParams(); // Pega o ID do cliente da URL
@@ -14,23 +15,17 @@ export default function DetalhesCliente() {
     const buscarPedidosDoCliente = async () => {
       setCarregando(true);
       try {
-        // ATENÇÃO: Ajuste esta URL se o seu endpoint for diferente!
-        const resposta = await fetch(`http://localhost:8080/api/pedidos/cliente/${id}`);
+        const dados = await pedidosService.obterPedidosDoCliente(id);
+        setPedidos(dados);
         
-        if (resposta.ok) {
-          const dados = await resposta.json();
-          setPedidos(dados);
-          
-          // Se houver pedidos, pegamos o nome do cliente do primeiro pedido 
-          // para exibir no título da tela
-          if (dados.length > 0) {
-            setNomeCliente(dados[0].nomeCliente);
-          }
-        } else {
-          setPedidos([]);
+        // Se houver pedidos, pegamos o nome do cliente do primeiro pedido 
+        // para exibir no título da tela
+        if (dados.length > 0) {
+          setNomeCliente(dados[0].nomeCliente);
         }
       } catch (error) {
         console.error("Erro ao buscar detalhes do cliente:", error);
+        setPedidos([]);
       } finally {
         setCarregando(false);
       }
@@ -77,20 +72,14 @@ export default function DetalhesCliente() {
     if (!confirmar) return;
 
     try {
-      const resposta = await fetch(`http://localhost:8080/api/pedidos/cliente/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (resposta.ok) {
-        // Remove o pedido do estado local
-        setPedidos(pedidos.filter(pedido => pedido.id !== id));
-        alert("Pedido deletado com sucesso!");
-      } else {
-        alert("Erro ao deletar o pedido.");
-      }
+      await pedidosService.deletarPedidoCliente(id);
+      
+      // Remove o pedido do estado local
+      setPedidos(pedidos.filter(pedido => pedido.id !== id));
+      alert("Pedido deletado com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar pedido:", error);
-      alert("Erro ao conectar com o servidor.");
+      alert("Erro ao deletar o pedido.");
     }
   };
 

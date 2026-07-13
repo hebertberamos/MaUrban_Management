@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ComprasLoja.css';
+import * as pedidosService from '../../services/pedidosService';
 
 export default function ComprasLoja() {
     const navigate = useNavigate();
@@ -18,19 +19,11 @@ export default function ComprasLoja() {
     const buscarCompras = async () => {
       setCarregando(true);
       try {
-        // Formata o mês para ter 2 dígitos (ex: 7 vira "07") por segurança na URL
-        const mesFormatado = String(mes).padStart(2, '0');
-        const url = `http://localhost:8080/api/pedidos/loja/mes?ano=${ano}&mes=${mesFormatado}`;
-
-        const resposta = await fetch(url);
-        if (resposta.ok) {
-          const dados = await resposta.json();
-          setCompras(dados);
-        } else {
-          setCompras([]);
-        }
+        const dados = await pedidosService.obterPedidosLojaParaMes(ano, mes);
+        setCompras(dados);
       } catch (error) {
         console.error("Erro ao buscar compras da loja:", error);
+        setCompras([]);
       } finally {
         setCarregando(false);
       }

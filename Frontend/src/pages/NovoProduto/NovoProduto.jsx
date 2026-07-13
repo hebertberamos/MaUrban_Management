@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NovoProduto.css';
+import * as produtosService from '../../services/produtosService';
 
 export default function NovoProduto() {
   const navigate = useNavigate();
@@ -22,33 +23,15 @@ export default function NovoProduto() {
       return;
     }
 
-    // Prepara o objeto garantindo que os números sejam enviados como números
-    const payload = {
-      nome: produto.nome,
-      precoAtual: parseFloat(produto.precoAtual),
-      quantEstoque: parseInt(produto.quantEstoque, 10),
-      tamanho: produto.tamanho
-    };
-
     try {
-      const resposta = await fetch('http://localhost:8080/api/produtos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (resposta.ok) {
-        alert("Produto cadastrado com sucesso!");
-        // Redireciona o usuário de volta para a tela de estoque
-        navigate('/estoque');
-      } else {
-        alert("Erro ao cadastrar o produto.");
-      }
+      await produtosService.criarProduto(produto);
+      
+      alert("Produto cadastrado com sucesso!");
+      // Redireciona o usuário de volta para a tela de estoque
+      navigate('/estoque');
     } catch (error) {
       console.error("Erro na requisição:", error);
-      alert("Erro ao conectar com o servidor.");
+      alert("Erro ao cadastrar o produto.");
     }
   };
 

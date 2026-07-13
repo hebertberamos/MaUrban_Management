@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NovaVenda.css';
+import * as clientesService from '../../services/clientesService';
+import * as produtosService from '../../services/produtosService';
+import * as pedidosService from '../../services/pedidosService';
 
 export default function NovaVenda() {
   const navigate = useNavigate();      
@@ -28,13 +31,13 @@ export default function NovaVenda() {
   useEffect(() => {
     const carregarDadosBase = async () => {
       try {
-        const [resClientes, resProdutos] = await Promise.all([
-          fetch('http://localhost:8080/api/clientes'),
-          fetch('http://localhost:8080/api/produtos')
+        const [clients, products] = await Promise.all([
+          clientesService.listarClientes(),
+          produtosService.listarProdutos()
         ]);
-
-        if (resClientes.ok) setClientes(await resClientes.json());
-        if (resProdutos.ok) setProdutos(await resProdutos.json());
+        
+        setClientes(clients);
+        setProdutos(products);
       } catch (error) {
         console.error("Erro ao buscar dados base:", error);
       }
@@ -77,28 +80,20 @@ export default function NovaVenda() {
     }
 
     try {
-      const resposta = await fetch('http://localhost:8080/api/pedidos/cliente', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(pedido)
+      await pedidosService.criarPedidoCliente(dadosParaEnvio);
+      
+      alert("Venda registrada com sucesso!");
+      // Limpa o formulário
+      setPedido({
+        clienteId: '',
+        metodoPagamento: 'CARTAO',
+        quantidadeDeParcelas: 1,
+        itens: [{ produtoId: '', quantidade: 1 }]
       });
-
-      if (resposta.ok) {
-        alert("Venda registrada com sucesso!");
-        // Limpa o formulário
-        setPedido({
-          clienteId: '',
-          metodoPagamento: 'CARTAO',
-          quantidadeDeParcelas: 1,
-          itens: [{ produtoId: '', quantidade: 1 }]
-        });
-      } else {
-        alert("Erro ao registrar a venda.");
-      }
+      navigate('/vendas');
     } catch (error) {
       console.error("Erro na requisição:", error);
+      alert("Erro ao registrar a venda.");
     }
   };
 

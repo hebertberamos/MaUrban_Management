@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import MaUrbanIcon from './assets/MaUrban-icon.svg';
+import MaUrbanIcon from '../../assets/MaUrban-icon.svg';
 import './Layout.css'; 
 
 export default function Layout() {

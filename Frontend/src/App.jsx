@@ -1,16 +1,16 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './Layout';
-import Dashboard from './Dashboard';
-import Clientes from './Clientes';
-import NovaVenda from './NovaVenda';
-import Estoque from './Estoque';
-import NovoProduto from './NovoProduto';
-import ComprasLoja from './ComprasLoja';
-import NovaCompra from './NovaCompra';
-import VendasClientes from './VendasClientes';
-import DetalhesCliente from './DetalhesCliente';
-import NovoCliente from './NovoCliente';
-import Movimentacoes from './Movimentacoes';
+import Layout from './components/Layout/Layout';
+import Dashboard from './pages/Dashboard/Dashboard';
+import Clientes from './pages/Clientes/Clientes';
+import NovaVenda from './pages/NovaVenda/NovaVenda';
+import Estoque from './pages/Estoque/Estoque';
+import NovoProduto from './pages/NovoProduto/NovoProduto';
+import ComprasLoja from './pages/ComprasLoja/ComprasLoja';
+import NovaCompra from './pages/NovaCompra/NovaCompra';
+import VendasClientes from './pages/VendasClientes/VendasClientes';
+import DetalhesCliente from './pages/DetalhesCliente/DetalhesCliente';
+import NovoCliente from './pages/NovoCliente/NovoCliente';
+import Movimentacoes from './pages/Movimentacoes/Movimentacoes';
 
 export default function App() {
   return (
