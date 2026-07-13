@@ -73,7 +73,7 @@ export default function Movimentacoes() {
               <div className="mov-detalhes">
                 <span className="mov-valor">{formatarMoeda(item.valor)}</span>
                 <span className="mov-tipo">{item.tipoMovimentacao}</span>
-                <span className="mov-data">{new Date(item.dataMovimentacao).toLocaleDateString('pt-BR')}</span>
+                <span className="mov-data">{new Date(item.dataMovimentacao).toLocaleString('pt-BR')}</span>
               </div>
             </div>
           ))
