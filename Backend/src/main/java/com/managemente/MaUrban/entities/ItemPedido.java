@@ -23,7 +23,7 @@ public class ItemPedido {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id", nullable = false)
-    private Pedido pedido;
+    private PedidoCliente pedido;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id", nullable = false)

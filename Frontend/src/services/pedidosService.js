@@ -31,6 +31,14 @@ export async function obterPedidosLojaParaMes(ano, mes) {
   return apiGet(`/pedidos/loja/mes?ano=${ano}&mes=${mesFormatado}`);
 }
 
+export async function obterPedidosLoja() {
+  return apiGet('/pedidos/loja');
+}
+
+export async function deletarPedidoLoja(pedidoId) {
+  return apiDelete(`/pedidos/loja/${pedidoId}`);
+}
+
 // Create a new store order (purchase)
 export async function criarPedidoLoja(compra) {
   return apiPost('/pedidos/loja', compra);
@@ -42,5 +50,6 @@ export default {
   criarPedidoCliente,
   deletarPedidoCliente,
   obterPedidosLojaParaMes,
+  obterPedidosLoja,
   criarPedidoLoja,
 };

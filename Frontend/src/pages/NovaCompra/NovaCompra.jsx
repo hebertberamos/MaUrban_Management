@@ -1,54 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import './NovaCompra.css';
-import * as produtosService from '../../services/produtosService';
 import * as pedidosService from '../../services/pedidosService';
 
 export default function NovaCompra() {
   const navigate = useNavigate();
-  const [produtos, setProdutos] = useState([]);
   
-  // O estado espelha a estrutura do seu JSON de envio
+  // O estado espelha a estrutura do JSON que o backend espera
   const [compra, setCompra] = useState({
     cartao: '',
     quantidadeDeParcelas: 1,
-    itens: [
-      { produtoId: '', quantidade: 1 }
-    ]
+    valorTotal: 0.0
   });
 
-  // Busca os produtos ao carregar a tela para preencher os selects
-  useEffect(() => {
-    const carregarProdutos = async () => {
-      try {
-        const produtos = await produtosService.listarProdutos();
-        setProdutos(produtos);
-      } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
-      }
-    };
 
-    carregarProdutos();
-  }, []);
-
-  // Funções para manipular os itens da compra dinamicamente
-  const adicionarNovoItem = () => {
-    setCompra({
-      ...compra,
-      itens: [...compra.itens, { produtoId: '', quantidade: 1 }]
-    });
-  };
-
-  const removerItem = (indexParaRemover) => {
-    const novosItens = compra.itens.filter((_, index) => index !== indexParaRemover);
-    setCompra({ ...compra, itens: novosItens });
-  };
-
-  const atualizarItem = (index, campo, valor) => {
-    const novosItens = [...compra.itens];
-    novosItens[index][campo] = valor;
-    setCompra({ ...compra, itens: novosItens });
-  };
 
   // Envio dos dados para o back-end
   const handleSubmit = async (e) => {
@@ -59,8 +24,12 @@ export default function NovaCompra() {
       alert("Por favor, informe o cartão utilizado.");
       return;
     }
-    if (compra.itens.some(item => !item.produtoId || item.quantidade < 1)) {
-      alert("Por favor, selecione um produto e informe uma quantidade válida para todos os itens.");
+    if (!compra.valorTotal || Number(compra.valorTotal) <= 0) {
+      alert("Por favor, informe o valor total da compra maior que zero.");
+      return;
+    }
+    if (!compra.quantidadeDeParcelas || Number(compra.quantidadeDeParcelas) < 1) {
+      alert("Por favor, informe uma quantidade de parcelas válida.");
       return;
     }
 
@@ -83,7 +52,7 @@ export default function NovaCompra() {
 
       <form className="nova-compra-form" onSubmit={handleSubmit}>
         
-        {/* BLOCO 1: Informações Principais */}
+        {/* Informações Principais */}
         <div className="form-section">
           <h3>Informações do Pagamento</h3>
           
@@ -103,6 +72,18 @@ export default function NovaCompra() {
             </div>
 
             <div className="form-group flex-1">
+              <label>Valor Total (R$)</label>
+              <input
+                type="number"
+                step="0.01"
+                className="form-input"
+                min="0"
+                value={compra.valorTotal}
+                onChange={(e) => setCompra({...compra, valorTotal: parseFloat(e.target.value) || 0})}
+              />
+            </div>
+
+            <div className="form-group flex-1">
               <label>Quantidade de Parcelas</label>
               <input 
                 type="number" 
@@ -116,56 +97,7 @@ export default function NovaCompra() {
           </div>
         </div>
 
-        {/* BLOCO 2: Produtos (Dinâmico) */}
-        <div className="form-section">
-          <h3>Itens da Compra</h3>
-          
-          {compra.itens.map((item, index) => (
-            <div key={index} className="produto-item-row">
-              <div className="form-group flex-2">
-                <select 
-                  className="form-input"
-                  value={item.produtoId}
-                  onChange={(e) => atualizarItem(index, 'produtoId', e.target.value)}
-                >
-                  <option value="">Selecione um produto...</option>
-                  {produtos.map(p => (
-                    // Reaproveitando a lógica de mostrar o nome e o tamanho
-                    <option key={p.id} value={p.id}>
-                      {p.nome} ({p.tamanho})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group flex-1">
-                <input 
-                  type="number" 
-                  className="form-input"
-                  min="1"
-                  placeholder="Qtd"
-                  value={item.quantidade}
-                  onChange={(e) => atualizarItem(index, 'quantidade', parseInt(e.target.value) || 1)}
-                />
-              </div>
-
-              <button 
-                type="button" 
-                className="btn-remover-item"
-                onClick={() => removerItem(index)}
-                disabled={compra.itens.length === 1} // Impede remover se for o único
-              >
-                Remover
-              </button>
-            </div>
-          ))}
-
-          <button type="button" className="btn-adicionar-item" onClick={adicionarNovoItem}>
-            + Adicionar outro produto
-          </button>
-        </div>
-
-        {/* BLOCO 3: Ações */}
+        {/* Ações */}
         <div className="form-actions">
           <button 
             type="button" 

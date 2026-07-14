@@ -18,6 +18,11 @@ public class PedidoLojaController {
 
     private final PedidoLojaService pedidoService;
 
+    @GetMapping
+    public ResponseEntity<List<PedidoLojaResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(pedidoService.listarTodos());
+    }
+
     @PostMapping
     public ResponseEntity<PedidoLojaResponseDTO> criarCompra(@RequestBody PedidoLojaRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.criarPedido(dto));
