@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -90,5 +91,21 @@ public class ParcelaService {
                 parcela.getValorParcela(),
                 parcela.getStatus()
         );
+    }
+
+    public List<ParcelaResponseDTO> buscarPorPedido(UUID pedidoId) {
+        List<Parcela> parcelas = parcelaRepository.findByPedidoId(pedidoId);
+        return parcelas.stream().map(this::mapToParcelaResponseDTO).toList();
+    }
+
+    private ParcelaResponseDTO mapToParcelaResponseDTO(Parcela parcela) {
+        return  new ParcelaResponseDTO(
+                parcela.getId(),
+                parcela.getDataVencimento(),
+                parcela.getDataPagamento(),
+                parcela.getValorParcela(),
+                parcela.getStatus()
+        );
+
     }
 }

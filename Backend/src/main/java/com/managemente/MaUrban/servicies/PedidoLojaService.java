@@ -20,7 +20,14 @@ import java.util.UUID;
 public class PedidoLojaService {
 
     private final PedidoLojaRepository pedidoRepository;
-    private final ProdutoService produtoService;
+    private final ParcelaService parcelaService;
+
+    @Transactional
+    public List<PedidoLojaResponseDTO> listarTodos() {
+        return pedidoRepository.findAll().stream()
+                .map(this::mapToResponseDTO)
+                .toList();
+    }
 
     @Transactional
     public PedidoLojaResponseDTO criarPedido(PedidoLojaRequestDTO dto) {
@@ -86,7 +93,8 @@ public class PedidoLojaService {
                 pedido.getValorTotalPedido(),
                 pedido.getDataPedido(),
                 pedido.getCartao(),
-                pedido.isEmAberto(MetodoPagamento.PROMISSORIA)
+                pedido.isEmAberto(MetodoPagamento.PROMISSORIA),
+                parcelaService.buscarPorPedido(pedido.getId())
         );
     }
 }

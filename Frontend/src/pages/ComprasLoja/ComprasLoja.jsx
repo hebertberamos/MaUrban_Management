@@ -43,6 +43,27 @@ export default function ComprasLoja() {
     return `${d}/${m}/${a}`;
   };
 
+  const handleDeletarCompra = async (id) => {
+    const confirmar = window.confirm("Tem certeza que deseja deletar este pedido? Esta ação não pode ser desfeita.");
+    if (!confirmar) return;
+
+    try {
+      const resposta = await fetch(`http://localhost:8080/api/pedidos/loja/${id}`, {
+         method: 'DELETE',
+       });      
+
+      if (resposta.ok) {
+        setCompras(compras.filter(c => c.id !== id));
+        alert("Pedido deletado com sucesso!");
+      } else {
+        alert("Erro ao deletar o pedido.");
+      }
+    } catch (error) {
+      console.error("Erro ao deletar compra:", error);
+      alert("Erro ao conectar com o servidor.");
+    }
+  };
+
   // Gerar opções de anos (ex: de 2024 até o ano atual + 1)
   const anosDisponiveis = Array.from({ length: 5 }, (_, i) => dataAtual.getFullYear() - 2 + i);
 
@@ -111,7 +132,16 @@ export default function ComprasLoja() {
                 {/* Lado Esquerdo */}
                 <div className="compra-info-principal">
                   <h3 className="compra-cartao">Cartão: {compra.cartao}</h3>
-                  <span className="compra-data">Data: {formatarData(compra.dataPedido)}</span>
+                  <div className="compra-meta">
+                    <span className="compra-data">Data: {formatarData(compra.dataPedido)}</span>
+                    <button
+                      className="btn-deletar-card"
+                      onClick={() => handleDeletarCompra(compra.id)}
+                      title="Deletar pedido"
+                    >
+                      Deletar
+                    </button>
+                  </div>
                 </div>
 
                 {/* Lado Direito */}
@@ -121,6 +151,16 @@ export default function ComprasLoja() {
                   </span>
                   <span className={`compra-status ${compra.emAberto ? 'status-aberto' : 'status-pago'}`}>
                     {compra.emAberto ? 'Em aberto' : 'Pago'}
+                  </span>
+
+                  {/* Exibir número de parcelas pagas e total */}
+                  <span className="compra-parcelas">
+                    {(() => {
+                      const parcelas = compra.parcelas || [];
+                      const total = parcelas.length || (compra.quantidadeDeParcelas || 0);
+                      const pagas = parcelas.filter(p => p.status === 'PAGO').length;
+                      return `${pagas} of ${total}`;
+                    })()}
                   </span>
                 </div>
 
