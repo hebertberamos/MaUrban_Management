@@ -1,12 +1,9 @@
 package com.managemente.MaUrban.servicies;
 
-import com.managemente.MaUrban.dtos.ItemPedidoRequestDTO;
 import com.managemente.MaUrban.dtos.PedidoLojaRequestDTO;
 import com.managemente.MaUrban.dtos.PedidoLojaResponseDTO;
-import com.managemente.MaUrban.entities.ItemPedido;
 import com.managemente.MaUrban.entities.Parcela;
 import com.managemente.MaUrban.entities.PedidoLoja;
-import com.managemente.MaUrban.entities.Produto;
 import com.managemente.MaUrban.entities.enums.MetodoPagamento;
 import com.managemente.MaUrban.entities.enums.StatusPagamento;
 import com.managemente.MaUrban.repositories.PedidoLojaRepository;
@@ -30,26 +27,7 @@ public class PedidoLojaService {
         PedidoLoja pedido = new PedidoLoja();
         pedido.setCartao(dto.cartao());
         pedido.setDataPedido(LocalDate.now());
-
-        double valorTotal = 0.0;
-        List<ItemPedido> itens = new ArrayList<>();
-
-        for (ItemPedidoRequestDTO itemDto : dto.itens()) {
-            // AQUI A MÁGICA MUDA: Comprar produtos AUMENTA o estoque da loja
-            Produto produtoAtualizado = produtoService.restaurarEstoque(itemDto.produtoId(), itemDto.quantidade());
-
-            ItemPedido item = new ItemPedido();
-            item.setPedido(pedido);
-            item.setProduto(produtoAtualizado);
-            item.setQuantidadeComprada(itemDto.quantidade());
-            item.setPrecoUnitarioNoMomento(produtoAtualizado.getPrecoAtual());
-
-            itens.add(item);
-            valorTotal += (produtoAtualizado.getPrecoAtual() * itemDto.quantidade());
-        }
-
-        pedido.setPecas(itens);
-        pedido.setValorTotalPedido(valorTotal);
+        pedido.setValorTotalPedido(dto.valorTotal());
         pedido.setParcelas(gerarParcelasLoja(pedido, dto.quantidadeDeParcelas()));
 
         pedido = pedidoRepository.save(pedido);
@@ -61,32 +39,11 @@ public class PedidoLojaService {
         PedidoLoja pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido da loja não encontrado"));
 
-        // 1. Se a loja está alterando a compra, removemos o estoque que havia entrado
-        pedido.getPecas().forEach(item ->
-                produtoService.removerEstoque(item.getProduto().getId(), item.getQuantidadeComprada())
-        );
-
-        pedido.getPecas().clear();
+        // Limpa as parcelas que já existiam para o pedido
         pedido.getParcelas().clear();
 
         pedido.setCartao(dto.cartao());
-        double valorTotal = 0.0;
-
-        // 2. Adiciona o novo estoque
-        for (ItemPedidoRequestDTO itemDto : dto.itens()) {
-            Produto produtoAtualizado = produtoService.restaurarEstoque(itemDto.produtoId(), itemDto.quantidade());
-
-            ItemPedido item = new ItemPedido();
-            item.setPedido(pedido);
-            item.setProduto(produtoAtualizado);
-            item.setQuantidadeComprada(itemDto.quantidade());
-            item.setPrecoUnitarioNoMomento(produtoAtualizado.getPrecoAtual());
-
-            pedido.getPecas().add(item);
-            valorTotal += (produtoAtualizado.getPrecoAtual() * itemDto.quantidade());
-        }
-
-        pedido.setValorTotalPedido(valorTotal);
+        pedido.setValorTotalPedido(dto.valorTotal());
         pedido.getParcelas().addAll(gerarParcelasLoja(pedido, dto.quantidadeDeParcelas()));
 
         pedido = pedidoRepository.save(pedido);
@@ -97,11 +54,6 @@ public class PedidoLojaService {
     public void deletarPedido(UUID id) {
         PedidoLoja pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido da loja não encontrado"));
-
-        // Se a loja cancela a compra, a mercadoria não entra, então removemos do estoque
-        pedido.getPecas().forEach(item ->
-                produtoService.removerEstoque(item.getProduto().getId(), item.getQuantidadeComprada())
-        );
 
         pedidoRepository.delete(pedido);
     }
