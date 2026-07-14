@@ -31,7 +31,7 @@ export async function obterPedidosLojaParaMes(ano, mes) {
   return apiGet(`/pedidos/loja/mes?ano=${ano}&mes=${mesFormatado}`);
 }
 
-export async function obterTodosOsPedidosLoja() {
+export async function obterPedidosLoja() {
   return apiGet('/pedidos/loja');
 }
 
@@ -50,6 +50,6 @@ export default {
   criarPedidoCliente,
   deletarPedidoCliente,
   obterPedidosLojaParaMes,
-  obterTodosOsPedidosLoja,
+  obterPedidosLoja,
   criarPedidoLoja,
 };
