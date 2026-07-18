@@ -78,7 +78,7 @@ export default function VendasClientes() {
     if (!confirmar) return;
 
     try {
-      const resposta = await fetch(`http://localhost:8080/api/pedidos/cliente/${id}`, {
+      const resposta = await fetch(`https://backend-production-eab3b.up.railway.app/api/pedidos/cliente/${id}`, {
         method: 'DELETE',
       });
 

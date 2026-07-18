@@ -77,7 +77,7 @@ export default function ComprasLoja() {
     if (!confirmar) return;
 
     try {
-      const resposta = await fetch(`http://localhost:8080/api/pedidos/loja/${id}`, {
+      const resposta = await fetch(`https://backend-production-eab3b.up.railway.app/api/pedidos/loja/${id}`, {
          method: 'DELETE',
        });      
 
