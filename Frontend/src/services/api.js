@@ -1,5 +1,5 @@
 // Base API configuration
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'http://backend-production-eab3b.up.railway.app/api';
 
 // Helper function to handle API requests
 async function apiRequest(endpoint, options = {}) {
