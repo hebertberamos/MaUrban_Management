@@ -1,5 +1,6 @@
 package com.managemente.MaUrban.servicies;
 
+import com.managemente.MaUrban.dtos.MovimentacaoCaixaResponseDTO;
 import com.managemente.MaUrban.entities.MovimentacaoCaixa;
 import com.managemente.MaUrban.entities.enums.TipoMovimentacao;
 import com.managemente.MaUrban.repositories.MovimentacaoCaixaRepository;
@@ -28,7 +29,7 @@ public class MovimentacaoCaixaService {
     }
 
     // Novo método para listar movimentações por mês e ano com filtro opcional por tipo
-    public java.util.List<com.managemente.MaUrban.dtos.MovimentacaoCaixaResponseDTO> listarPorMesEAno(int ano, int mes, TipoMovimentacao tipo) {
+    public java.util.List<MovimentacaoCaixaResponseDTO> listarPorMesEAno(int ano, int mes, TipoMovimentacao tipo) {
         var lista = repository.findByAnoAndMes(ano, mes);
         if (tipo == null) return lista;
         return lista.stream()

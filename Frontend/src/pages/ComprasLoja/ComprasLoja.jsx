@@ -78,6 +78,7 @@ export default function ComprasLoja() {
 
     try {
       const resposta = await fetch(`https://backend-production-eab3b.up.railway.app/api/pedidos/loja/${id}`, {
+      // const resposta = await fetch(`http://localhost:8080/api/pedidos/loja/${id}`, { //TODO: Alterar para a URL de produção quando for para deploy
          method: 'DELETE',
        });      
 
@@ -110,13 +111,23 @@ export default function ComprasLoja() {
   return (
     <div className="compras-container">
       
-      {/* Cabeçalho */}
+     {/* Cabeçalho */}
       <div className="compras-header">
         <div className="compras-acoes-topo">
           <button 
             className="btn-nova-compra"
             onClick={() => navigate('/nova-compra')}
-            >Registrar compra</button>
+          >
+            Registrar compra
+          </button>
+          
+          <button 
+            className="btn-nova-despesa"
+            onClick={() => navigate('/nova-despesa')}
+            style={{ marginLeft: '10px' }} // Adicionado um espaçamento básico (você pode mover para o CSS)
+          >
+            Registrar despesa
+          </button>
         </div>
         
         <div className="compras-filtros">
