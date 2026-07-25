@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import './NovaCompra.css';
+import './NovaCompra.css';
 import * as pedidosService from '../../services/pedidosService';
 
 export default function NovaCompra() {

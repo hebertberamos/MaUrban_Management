@@ -77,18 +77,8 @@ export default function ComprasLoja() {
     if (!confirmar) return;
 
     try {
-      const resposta = await fetch(`https://backend-production-eab3b.up.railway.app/api/pedidos/loja/${id}`, {
-      // const resposta = await fetch(`http://localhost:8080/api/pedidos/loja/${id}`, { //TODO: Alterar para a URL de produção quando for para deploy
-         method: 'DELETE',
-       });      
+      pedidosService.deletarPedidoLoja(id);
 
-      if (resposta.ok) {
-        const removidas = todasCompras.filter(c => c.id !== id);
-        setTodasCompras(removidas);
-        alert("Pedido deletado com sucesso!");
-      } else {
-        alert("Erro ao deletar o pedido.");
-      }
     } catch (error) {
       console.error("Erro ao deletar compra:", error);
       alert("Erro ao conectar com o servidor.");

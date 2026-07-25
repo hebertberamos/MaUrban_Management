@@ -18,7 +18,13 @@ async function apiRequest(endpoint, options = {}) {
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
 
-    return await response.json();
+    // DELETE or response without content (204 No Content) should not attempt to parse JSON
+    if (response.status === 204) {
+      return null;
+    }
+    const jsonText = await response.text();
+
+    return jsonText ? JSON.parse(jsonText) : null;
   } catch (error) {
     console.error(`API Request Failed: ${endpoint}`, error);
     throw error;

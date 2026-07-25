@@ -1,5 +1,6 @@
 import { apiGet, apiPut } from './api';
 
+// FETCH DASHBOARD MONTHLY DEBITS
 // Fetch dashboard summary data (cards)
 export async function obterResumo(ano, mes) {
   return apiGet(`/dashboard/resumo?ano=${ano}&mes=${mes}`);
@@ -20,9 +21,16 @@ export async function estornarParcela(parcelaId) {
   return apiPut(`/parcelas/estornar/parcela-cliente/${parcelaId}`);
 }
 
+// FETCH DASHBOARD MONTHLY DEBITS
+export async function obterDebitosMensais(ano, mes) {
+  return apiGet(`/dashboard/debitos-mensais?ano=${ano}&mes=${mes}`);
+} 
+
+
 export default {
   obterResumo,
   obterPagamentos,
   pagarParcela,
   estornarParcela,
+  obterDebitosMensais
 };
