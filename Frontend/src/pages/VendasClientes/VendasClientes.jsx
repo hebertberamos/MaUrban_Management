@@ -78,17 +78,8 @@ export default function VendasClientes() {
     if (!confirmar) return;
 
     try {
-      const resposta = await fetch(`https://backend-production-eab3b.up.railway.app/api/pedidos/cliente/${id}`, {
-        method: 'DELETE',
-      });
+      pedidosService.deletarPedidoCliente(id);
 
-      if (resposta.ok) {
-        // Remove o pedido deletado da lista do estado para sumir da tela na hora
-        setVendas(vendas.filter(venda => venda.id !== id));
-        alert("Pedido deletado com sucesso!");
-      } else {
-        alert("Erro ao deletar o pedido.");
-      }
     } catch (error) {
       console.error("Erro ao deletar venda:", error);
       alert("Erro ao conectar com o servidor.");
