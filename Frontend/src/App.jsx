@@ -11,6 +11,7 @@ import VendasClientes from './pages/VendasClientes/VendasClientes';
 import DetalhesCliente from './pages/DetalhesCliente/DetalhesCliente';
 import NovoCliente from './pages/NovoCliente/NovoCliente';
 import Movimentacoes from './pages/Movimentacoes/Movimentacoes';
+import NovaDespesa from './pages/NovaDespesa/NovaDespesa'; 
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="clientes/:id" element={<DetalhesCliente />} />
           <Route path="novo-cliente" element={<NovoCliente />} />
           <Route path="movimentacoes" element={<Movimentacoes />} />
+          <Route path="nova-despesa" element={<NovaDespesa />} />
         </Route>
       </Routes>
     </BrowserRouter>
