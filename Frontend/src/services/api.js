@@ -1,5 +1,5 @@
 // Base API configuration
-const API_BASE_URL = 'https://backend-production-eab3b.up.railway.app/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 // Helper function to handle API requests
 async function apiRequest(endpoint, options = {}) {
