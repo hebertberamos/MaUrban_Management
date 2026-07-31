@@ -39,6 +39,6 @@ public class Produto {
     private Tamanho tamanho;
 
     public void calcularPrecoVenda() {
-        this.precoVenda = precoAtual * 1.3;
+        this.precoVenda = precoAtual * 1.4;
     }
 }
