@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NovoCliente.css';
 import * as clientesService from '../../services/clientesService';
+import toast from 'react-hot-toast';
 
 export default function NovoCliente() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function NovoCliente() {
 
     // Validação básica para evitar enviar nomes vazios
     if (!nome.trim()) {
-      alert("Por favor, insira o nome do cliente.");
+      toast.error("Insira o nome do cliente.");
       return;
     }
 
@@ -22,11 +23,11 @@ export default function NovoCliente() {
     try {
       await clientesService.criarCliente(nome);
       
-      alert("Cliente cadastrado com sucesso!");
+      toast.success("Cliente cadastrado com sucesso!");
       navigate('/clientes'); // Retorna para a listagem de clientes
     } catch (error) {
       console.error("Erro na requisição:", error);
-      alert("Erro ao cadastrar o cliente. Verifique os dados.");
+      toast.error("Erro ao cadastrar o cliente. Verifique os dados.");
     } finally {
       setCarregando(false);
     }

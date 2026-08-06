@@ -1,4 +1,5 @@
-/* src/VendasClientes.css */
+@import '../../styles/pedidoCard.css';
+
 .vendas-container {
   display: flex;
   flex-direction: column;
@@ -81,96 +82,16 @@
   width: 8px;
 }
 .vendas-lista-scroll::-webkit-scrollbar-track {
-  background: #FFFFFF; 
+  background: #FFFFFF;
 }
 .vendas-lista-scroll::-webkit-scrollbar-thumb {
-  background: #555; 
+  background: #555;
   border-radius: 10px;
-  border: 2px solid #FFFFFF; 
+  border: 2px solid #FFFFFF;
 }
 
 .sem-dados {
   color: #666;
   font-size: 14px;
   margin-top: 20px;
-}
-
-/* --- ESTILO DO CARD DE VENDA --- */
-.venda-item {
-  display: flex;
-  flex-direction: column;
-  gap: 12px; /* Espaço entre a linha de cima e a de baixo */
-  padding: 24px 0;
-  border-bottom: 1px solid #EAEAEA;
-}
-
-.venda-item:last-child {
-  border-bottom: none;
-}
-
-.venda-linha-superior {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.venda-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-.venda-nome-cliente {
-  font-size: 18px;
-  font-weight: 400;
-  color: #222;
-  margin: 0;
-}
-
-.venda-data {
-  font-size: 15px;
-  color: #666;
-  font-weight: 400;
-}
-
-.venda-linha-inferior {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.venda-detalhes {
-  font-size: 16px;
-  color: #555;
-  font-weight: 400;
-}
-
-/* --- BOTÃO DE DELETAR NO CARD --- */
-.venda-direita-card {
-  display: flex;
-  align-items: center;
-  gap: 16px; /* Espaço entre a data e a lixeira */
-}
-
-.btn-deletar-card {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.2s, transform 0.1s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-deletar-card:hover {
-  background-color: #FEE2E2; /* Fundo vermelho bem clarinho */
-  transform: scale(1.1);
-}
-
-.btn-deletar-card:active {
-  transform: scale(0.95);
 }

@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import './ComprasLoja.css';
 import * as pedidosService from '../../services/pedidosService';
+import { useConfirm } from '../../components/ConfirmModal/ConfirmModal';
 
 export default function ComprasLoja() {
     const navigate = useNavigate();
+  const confirmar = useConfirm();
   // Pega o mês e ano atuais para definir como padrão inicial
   const dataAtual = new Date();
   // Iniciar sem filtros para mostrar todas as compras por padrão
@@ -73,15 +76,24 @@ export default function ComprasLoja() {
   };
 
   const handleDeletarCompra = async (id) => {
-    const confirmar = window.confirm("Tem certeza que deseja deletar este pedido? Esta ação não pode ser desfeita.");
-    if (!confirmar) return;
+    // Antes: const confirmar = window.confirm("...")
+    // Agora: modal customizado, chamado via await (retorna true/false)
+    const ok = await confirmar(
+      "Tem certeza que deseja deletar este pedido? Esta ação não pode ser desfeita.",
+      "Deletar compra"
+    );
+    if (!ok) return;
 
     try {
-      pedidosService.deletarPedidoLoja(id);
+      await pedidosService.deletarPedidoLoja(id);
 
+      setTodasCompras(todasCompras.filter(compra => compra.id !== id));
+      // Antes: alert("Compra deletada com sucesso!")
+      toast.success("Compra deletada com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar compra:", error);
-      alert("Erro ao conectar com o servidor.");
+      // Antes: alert("Erro ao conectar com o servidor.")
+      toast.error("Erro ao conectar com o servidor.");
     }
   };
 
