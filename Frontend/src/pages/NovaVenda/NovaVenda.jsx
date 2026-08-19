@@ -4,6 +4,7 @@ import './NovaVenda.css';
 import * as clientesService from '../../services/clientesService';
 import * as produtosService from '../../services/produtosService';
 import * as pedidosService from '../../services/pedidosService';
+import toast from 'react-hot-toast';
 
 export default function NovaVenda() {
   const navigate = useNavigate();      
@@ -71,18 +72,18 @@ export default function NovaVenda() {
 
     // Validação básica
     if (!pedido.clienteId) {
-      alert("Por favor, selecione um cliente.");
+      toast.error("Selecione um cliente.");
       return;
     }
     if (pedido.itens.some(item => !item.produtoId || item.quantidade < 1)) {
-      alert("Por favor, preencha todos os produtos e quantidades corretamente.");
+      toast.error("Selecione o item do pedido.");
       return;
     }
 
     try {
       await pedidosService.criarPedidoCliente(dadosParaEnvio);
       
-      alert("Venda registrada com sucesso!");
+      toast.success("Venda registrada com sucesso!");
       // Limpa o formulário
       setPedido({
         clienteId: '',
@@ -93,7 +94,7 @@ export default function NovaVenda() {
       navigate('/vendas');
     } catch (error) {
       console.error("Erro na requisição:", error);
-      alert("Erro ao registrar a venda.");
+      toast.error("Erro ao registrar a venda.");
     }
   };
 

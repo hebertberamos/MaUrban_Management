@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NovoProduto.css';
 import * as produtosService from '../../services/produtosService';
+import toast from 'react-hot-toast';
 
 export default function NovoProduto() {
   const navigate = useNavigate();
@@ -19,19 +20,19 @@ export default function NovoProduto() {
 
     // Validação básica para não enviar dados vazios
     if (!produto.nome.trim() || !produto.precoAtual || !produto.quantEstoque) {
-      alert("Por favor, preencha todos os campos corretamente.");
+      toast.error("Por favor, preencha todos os campos corretamente.");
       return;
     }
 
     try {
       await produtosService.criarProduto(produto);
       
-      alert("Produto cadastrado com sucesso!");
+      toast.success("Produto cadastrado com sucesso!");
       // Redireciona o usuário de volta para a tela de estoque
       navigate('/estoque');
     } catch (error) {
       console.error("Erro na requisição:", error);
-      alert("Erro ao cadastrar o produto.");
+      toast.error("Erro ao cadastrar o produto.");
     }
   };
 

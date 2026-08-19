@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NovaCompra.css';
 import * as pedidosService from '../../services/pedidosService';
+import toast from 'react-hot-toast';
 
 export default function NovaCompra() {
   const navigate = useNavigate();
@@ -21,26 +22,26 @@ export default function NovaCompra() {
 
     // Validação básica
     if (!compra.cartao.trim()) {
-      alert("Por favor, informe o cartão utilizado.");
+      toast.error("Informe o cartão utilizado.");
       return;
     }
     if (!compra.valorTotal || Number(compra.valorTotal) <= 0) {
-      alert("Por favor, informe o valor total da compra maior que zero.");
+      toast.error("Iinforme o valor total da compra maior que zero.");
       return;
     }
     if (!compra.quantidadeDeParcelas || Number(compra.quantidadeDeParcelas) < 1) {
-      alert("Por favor, informe uma quantidade de parcelas válida.");
+      toast.error("Informe uma quantidade de parcelas válida.");
       return;
     }
 
     try {
       await pedidosService.criarPedidoLoja(compra);
       
-      alert("Compra da loja registrada com sucesso!");
+      toast.success("Compra da loja registrada com sucesso!");
       navigate('/compras'); // Redireciona de volta para a lista de compras
     } catch (error) {
       console.error("Erro na requisição:", error);
-      alert("Erro ao registrar a compra.");
+      toast.error("Erro ao registrar a compra.");
     }
   };
 

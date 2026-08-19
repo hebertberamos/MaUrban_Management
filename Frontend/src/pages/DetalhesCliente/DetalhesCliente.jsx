@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import './DetalhesCliente.css';
 import * as pedidosService from '../../services/pedidosService';
+import { formatarMoeda, formatarData, formatarMetodoPagamento } from '../../utils/formatters';
+import { useConfirm } from '../../components/ConfirmModal/ConfirmModal';
 
 export default function DetalhesCliente() {
   const { id } = useParams(); // Pega o ID do cliente da URL
   const navigate = useNavigate();
+  const confirmar = useConfirm();
   
   const [pedidos, setPedidos] = useState([]);
   const [nomeCliente, setNomeCliente] = useState("");
@@ -36,50 +40,24 @@ export default function DetalhesCliente() {
     }
   }, [id]);
 
-  const formatarMoeda = (valor) => {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
-  };
-
-  const formatarData = (dataString) => {
-    if (!dataString) return '';
-    const [a, m, d] = dataString.split('-');
-    return `${d}/${m}/${a}`;
-  };
-
-  const formatarMetodoPagamento = (metodo) => {
-    switch (metodo) {
-      case 'CARTAO': 
-        return 'Cartão';
-      case 'PROMISSORIA': 
-        return 'Promissória';
-      case 'PIX': 
-        return 'PIX';
-      case 'DINHEIRO': 
-        return 'Dinheiro';
-      
-      // Mantemos os antigos caso você tenha dados legados no banco de dados 
-      // de vendas feitas antes dessa alteração:
-      case 'CARTAO_CREDITO': 
-        return 'Cartão de crédito';
-      case 'CREDIARIO': 
-        return 'Crediário';
-      default: return metodo;
-    }
-  };
-
-  const handleDeletarPedido = async (id) => {
-    const confirmar = window.confirm("Tem certeza que deseja deletar este pedido por completo? O estoque dos produtos será devolvido.");
-    if (!confirmar) return;
+  const handleDeletarPedido = async (idPedido) => {
+    // Antes: const confirmar = window.confirm("...")
+    // Agora: modal customizado, chamado via await (retorna true/false)
+    const ok = await confirmar(
+      "Tem certeza que deseja deletar este pedido por completo? O estoque dos produtos será devolvido.",
+      "Deletar pedido"
+    );
+    if (!ok) return;
 
     try {
-      await pedidosService.deletarPedidoCliente(id);
+      await pedidosService.deletarPedidoCliente(idPedido);
       
       // Remove o pedido do estado local
-      setPedidos(pedidos.filter(pedido => pedido.id !== id));
-      alert("Pedido deletado com sucesso!");
+      setPedidos(pedidos.filter(pedido => pedido.id !== idPedido));
+      toast.success("Pedido deletado com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar pedido:", error);
-      alert("Erro ao deletar o pedido.");
+      toast.error("Erro ao deletar o pedido.");
     }
   };
 

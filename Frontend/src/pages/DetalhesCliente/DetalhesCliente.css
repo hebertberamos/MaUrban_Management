@@ -1,4 +1,5 @@
-/* src/DetalhesCliente.css */
+@import '../../styles/pedidoCard.css';
+
 .detalhes-cliente-container {
   display: flex;
   flex-direction: column;
@@ -53,147 +54,16 @@
   width: 8px;
 }
 .detalhes-lista-scroll::-webkit-scrollbar-track {
-  background: #FFFFFF; 
+  background: #FFFFFF;
 }
 .detalhes-lista-scroll::-webkit-scrollbar-thumb {
-  background: #555; 
+  background: #555;
   border-radius: 10px;
-  border: 2px solid #FFFFFF; 
+  border: 2px solid #FFFFFF;
 }
 
 .sem-dados {
   color: #666;
   font-size: 14px;
   margin-top: 20px;
-}
-
-/* --- ESTILO DO CARD (Reaproveitado) --- */
-.venda-item {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 24px 0;
-  border-bottom: 1px solid #EAEAEA;
-}
-
-.venda-item:last-child {
-  border-bottom: none;
-}
-
-.venda-linha-superior {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.venda-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-.venda-status {
-  font-size: 16px;
-  font-weight: 500;
-  margin: 0;
-}
-
-.status-pendente {
-  color: #8A6D3B; /* Ocre/Alaranjado */
-}
-
-.status-pago {
-  color: #3C763D; /* Verde escuro */
-}
-
-.venda-data {
-  font-size: 15px;
-  color: #666;
-  font-weight: 400;
-}
-
-.venda-linha-inferior {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.venda-detalhes {
-  font-size: 16px;
-  color: #555;
-  font-weight: 400;
-}
-
-/* --- ESTILOS DOS ITENS DO PEDIDO --- */
-.venda-itens-lista {
-  background-color: #F8F9FA;
-  border-radius: 6px;
-  padding: 12px 16px;
-  margin: 4px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.titulo-itens {
-  font-size: 13px;
-  font-weight: 500;
-  color: #777;
-  margin: 0 0 4px 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.item-detalhe {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-  color: #444;
-  border-bottom: 1px dashed #E0E0E0;
-  padding-bottom: 6px;
-}
-
-.item-detalhe:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.item-nome {
-  font-weight: 400;
-}
-
-.item-valor {
-  color: #666;
-  font-size: 13px;
-}
-
-/* --- BOTÃO DE DELETAR NO CARD --- */
-.venda-direita-card {
-  display: flex;
-  align-items: center;
-  gap: 16px; /* Espaço entre a data e a botão de delete */
-}
-
-.btn-deletar-card {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.2s, transform 0.1s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-deletar-card:hover {
-  background-color: #FEE2E2; /* Fundo vermelho bem clarinho */
-  transform: scale(1.1);
-}
-
-.btn-deletar-card:active {
-  transform: scale(0.95);
 }

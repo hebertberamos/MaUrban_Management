@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './VendasClientes.css';
 import * as pedidosService from '../../services/pedidosService';
+import { formatarMoeda, formatarData, formatarMetodoPagamento } from '../../utils/formatters';
+import toast from 'react-hot-toast';
 
 export default function VendasClientes() {
   const navigate = useNavigate();
@@ -30,38 +32,6 @@ export default function VendasClientes() {
     buscarVendas();
   }, [mes, ano]);
 
-  const formatarMoeda = (valor) => {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
-  };
-
-  const formatarData = (dataString) => {
-    if (!dataString) return '';
-    const [a, m, d] = dataString.split('-');
-    return `${d}/${m}/${a}`;
-  };
-
-  const formatarMetodoPagamento = (metodo) => {
-    switch (metodo) {
-      case 'CARTAO': 
-        return 'Cartão';
-      case 'PROMISSORIA': 
-        return 'Promissória';
-      case 'PIX': 
-        return 'PIX';
-      case 'DINHEIRO': 
-        return 'Dinheiro';
-      
-      // Mantemos os antigos caso você tenha dados legados no banco de dados 
-      // de vendas feitas antes dessa alteração:
-      case 'CARTAO_CREDITO': 
-        return 'Cartão de crédito';
-      case 'CREDIARIO': 
-        return 'Crediário';
-      default:
-        return metodo;
-    }
-  };
-
   const anosDisponiveis = Array.from({ length: 5 }, (_, i) => dataAtual.getFullYear() - 2 + i);
 
   const mesesDisponiveis = [
@@ -78,11 +48,13 @@ export default function VendasClientes() {
     if (!confirmar) return;
 
     try {
-      pedidosService.deletarPedidoCliente(id);
+      await pedidosService.deletarPedidoCliente(id);
 
+      setVendas(vendas.filter(venda => venda.id !== id));
+      toast.success("Pedido deletado com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar venda:", error);
-      alert("Erro ao conectar com o servidor.");
+      toast.error("Erro ao conectar com o servidor.");
     }
   };
 

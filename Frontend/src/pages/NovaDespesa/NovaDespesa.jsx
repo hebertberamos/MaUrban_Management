@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as despesaService from '../../services/DespesaService';
 import './NovaDespesa.css';
+import toast from 'react-hot-toast';
 
 export default function NovaDespesa() {
   const navigate = useNavigate();
@@ -24,11 +25,11 @@ export default function NovaDespesa() {
     try {
     await despesaService.criarDespesa(novaDespesa);
 
-    alert("Despesa registrada com sucesso!");
+    toast.success("Despesa registrada com sucesso!");
     navigate(-1); // Volta para a tela anterior
     } catch (error) {
       console.error("Erro ao conectar com a API:", error);
-      alert("Erro ao conectar com o servidor.");
+      toast.error("Erro ao conectar com o servidor.");
     } finally {
       setSalvando(false);
     }
