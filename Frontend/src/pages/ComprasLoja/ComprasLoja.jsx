@@ -88,11 +88,9 @@ export default function ComprasLoja() {
       await pedidosService.deletarPedidoLoja(id);
 
       setTodasCompras(todasCompras.filter(compra => compra.id !== id));
-      // Antes: alert("Compra deletada com sucesso!")
       toast.success("Compra deletada com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar compra:", error);
-      // Antes: alert("Erro ao conectar com o servidor.")
       toast.error("Erro ao conectar com o servidor.");
     }
   };
