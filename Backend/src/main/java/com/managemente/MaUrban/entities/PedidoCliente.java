@@ -22,9 +22,6 @@ public class PedidoCliente extends Pedido {
     @Column(name = "metodo_pagamento", nullable = false)
     private MetodoPagamento metodoPagamento;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemPedido> pecas = new ArrayList<>();
-
     @Override
     public String getIdentificadorOrigem() {
         return this.cliente.getNome();

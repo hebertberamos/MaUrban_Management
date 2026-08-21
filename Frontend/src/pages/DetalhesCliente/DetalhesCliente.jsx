@@ -86,7 +86,6 @@ export default function DetalhesCliente() {
               <div key={pedido.id} className="venda-item">
                 
                 <div className="venda-linha-superior">
-                  {/* Como já sabemos de quem é, podemos mostrar o Status no lugar do nome */}
                   <h3 className={`venda-status ${pedido.emAberto ? 'status-pendente' : 'status-pago'}`}>
                     {pedido.emAberto ? 'Pagamento Pendente' : 'Pago'}
                   </h3>
@@ -101,22 +100,6 @@ export default function DetalhesCliente() {
                     </button>
                   </div>
                 </div>
-
-                {/* Lista de Itens do Pedido */}
-                {pedido.itens && pedido.itens.length > 0 && (
-                  <div className="venda-itens-lista">
-                    <h4 className="titulo-itens">Produtos:</h4>
-                    {pedido.itens.map((item) => (
-                      <div key={item.itemId} className="item-detalhe">
-                        <span className="item-nome">
-                          {item.quantidadeComprada}x | {item.nomeProduto} | {formatarMoeda(item.valorProduto)}
-                        </span>
-                        {/* <span className="item-valor">
-                        </span> */}
-                      </div>
-                    ))}
-                  </div>
-                )}
 
                 <div className="venda-linha-inferior">
                   <span className="venda-detalhes">

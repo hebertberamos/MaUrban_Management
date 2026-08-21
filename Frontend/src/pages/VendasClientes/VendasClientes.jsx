@@ -127,22 +127,6 @@ export default function VendasClientes() {
                   </div>
                 </div>
 
-                 {/* Lista de Itens do Pedido */}
-                {venda.itens && venda.itens.length > 0 && (
-                  <div className="venda-itens-lista">
-                    <h4 className="titulo-itens">Produtos:</h4>
-                    {venda.itens.map((item) => (
-                      <div key={item.itemId} className="item-detalhe">
-                        <span className="item-nome">
-                          {item.quantidadeComprada}x | {item.nomeProduto} | {formatarMoeda(item.valorProduto)}
-                        </span>
-                        {/* <span className="item-valor">
-                        </span> */}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 <div className="venda-linha-inferior">
                   <span className="venda-detalhes">
                     Total: {formatarMoeda(venda.valorTotal)} | {formatarMetodoPagamento(venda.metodoPagamento)}

@@ -12,6 +12,5 @@ public record PedidoResponseDTO(
         double valorTotal,
         LocalDate dataPedido,
         MetodoPagamento metodoPagamento,
-        boolean emAberto,
-        List<ItemPedidoResponseDTO> itens
+        boolean emAberto
 ) {}

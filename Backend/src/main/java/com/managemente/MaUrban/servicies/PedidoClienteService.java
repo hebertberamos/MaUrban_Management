@@ -1,7 +1,5 @@
 package com.managemente.MaUrban.servicies;
 
-import com.managemente.MaUrban.dtos.ItemPedidoRequestDTO;
-import com.managemente.MaUrban.dtos.ItemPedidoResponseDTO;
 import com.managemente.MaUrban.dtos.PedidoClienteRequestDTO;
 import com.managemente.MaUrban.dtos.PedidoResponseDTO;
 import com.managemente.MaUrban.entities.*;
@@ -24,54 +22,35 @@ public class PedidoClienteService {
 
     private final PedidoClienteRepository pedidoRepository;
     private final ClienteRepository clienteRepository;
-    private final ProdutoService produtoService;
     private final MovimentacaoCaixaService movimentacaoCaixaService;
 
     @Transactional
     public PedidoResponseDTO criarPedido(PedidoClienteRequestDTO dto) {
-        // 1. Busca e valida o Cliente
         Cliente cliente = clienteRepository.findById(dto.clienteId())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
-        // 2. Inicializa o Pedido
         PedidoCliente pedido = new PedidoCliente();
         pedido.setCliente(cliente);
         pedido.setMetodoPagamento(dto.metodoPagamento());
         pedido.setDataPedido(LocalDate.now());
+        pedido.setValorTotalPedido(dto.valorTotal());
 
-        double valorTotal = 0.0;
-        List<ItemPedido> itens = new ArrayList<>();
-
-        // 3. Processa os itens, reduz estoque e calcula totais
-        for (ItemPedidoRequestDTO itemDto : dto.itens()) {
-            Produto produtoAtualizado = produtoService.reduzirEstoque(itemDto.produtoId(), itemDto.quantidade());
-
-            ItemPedido item = new ItemPedido();
-            item.setPedido(pedido);
-            item.setProduto(produtoAtualizado);
-            item.setQuantidadeComprada(itemDto.quantidade());
-            item.setPrecoUnitarioNoMomento(produtoAtualizado.getPrecoVenda());
-
-            itens.add(item);
-            valorTotal += (produtoAtualizado.getPrecoVenda() * itemDto.quantidade());
+        // TODO:Instead of create installments of the purchase, will be created a new 'promissoria' entity that will be saved for this client
+        if (pedido.getMetodoPagamento() == MetodoPagamento.PROMISSORIA) {
+            if(dto.quantidadeDeParcelas() == null) {
+                //TODO: create an specific exception for this case.
+                throw new RuntimeException("Compras na promissória necessitam informar quantidade de parcelas.");
+            }
+            pedido.setParcelas(gerarParcelas(pedido, dto.quantidadeDeParcelas()));
+        } else {
+            movimentacaoCaixaService.registrarMovimentacao(
+                    String.format("Recebimento à vista - Cliente %s", pedido.getIdentificadorOrigem()),
+                    pedido.getValorTotalPedido(),
+                    TipoMovimentacao.ENTRADA
+            );
         }
 
-        pedido.setPecas(itens);
-        pedido.setValorTotalPedido(valorTotal);
-
-        // 4. Gera as parcelas financeiras - caso a forma de pagamento seja na promissoria
-        //    Gerar o fluxo de caixa de entrada - caso a forma de pagamento seja PIX, Dinheiro ou Cartao
-        if(pedido.getMetodoPagamento() == MetodoPagamento.PROMISSORIA) {
-            List<Parcela> parcelas = gerarParcelas(pedido, dto.quantidadeDeParcelas());
-            pedido.setParcelas(parcelas);
-        }
-        else {
-            movimentacaoCaixaService.registrarMovimentacao(String.format("Recebimento à vista - Cliente %s", pedido.getIdentificadorOrigem()), pedido.getValorTotalPedido(), TipoMovimentacao.ENTRADA);
-        }
-
-        // 5. Salva tudo no banco (CascadeType.ALL fará o Hibernate salvar itens e parcelas automaticamente)
         pedido = pedidoRepository.save(pedido);
-
         return mapToResponseDTO(pedido);
     }
 
@@ -80,37 +59,14 @@ public class PedidoClienteService {
         PedidoCliente pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
-        // 1. Devolve ao estoque os itens do pedido antigo
-        pedido.getPecas().forEach(item ->
-                produtoService.restaurarEstoque(item.getProduto().getId(), item.getQuantidadeComprada())
-        );
-
-        // 2. Limpa os registros antigos (O JPA vai deletar do banco devido ao orphanRemoval)
-        pedido.getPecas().clear();
         pedido.getParcelas().clear();
 
-        // 3. Atualiza os dados básicos
         pedido.setMetodoPagamento(dto.metodoPagamento());
-        double valorTotal = 0.0;
+        pedido.setValorTotalPedido(dto.valorTotal());
 
-        // 4. Processa os novos itens e reduz o estoque novamente
-        for (ItemPedidoRequestDTO itemDto : dto.itens()) {
-            Produto produtoAtualizado = produtoService.reduzirEstoque(itemDto.produtoId(), itemDto.quantidade());
-
-            ItemPedido item = new ItemPedido();
-            item.setPedido(pedido);
-            item.setProduto(produtoAtualizado);
-            item.setQuantidadeComprada(itemDto.quantidade());
-            item.setPrecoUnitarioNoMomento(produtoAtualizado.getPrecoVenda());
-
-            pedido.getPecas().add(item);
-            valorTotal += (produtoAtualizado.getPrecoVenda() * itemDto.quantidade());
+        if (pedido.getMetodoPagamento() == MetodoPagamento.PROMISSORIA) {
+            pedido.getParcelas().addAll(gerarParcelas(pedido, dto.quantidadeDeParcelas()));
         }
-
-        pedido.setValorTotalPedido(valorTotal);
-
-        // 5. Recalcula as parcelas
-        pedido.getParcelas().addAll(gerarParcelas(pedido, dto.quantidadeDeParcelas()));
 
         pedido = pedidoRepository.save(pedido);
         return mapToResponseDTO(pedido);
@@ -126,8 +82,9 @@ public class PedidoClienteService {
             parcela.setValorParcela(valorDaParcela);
             parcela.setDataVencimento(LocalDate.now().plusMonths(i));
 
-            // Se for PIX, Dinheiro ou Cartão, já entra como PAGO e com data de hoje
-            if (pedido.getMetodoPagamento() == MetodoPagamento.PIX || pedido.getMetodoPagamento() == MetodoPagamento.DINHEIRO || pedido.getMetodoPagamento() == MetodoPagamento.CARTAO) {
+            if (pedido.getMetodoPagamento() == MetodoPagamento.PIX
+                    || pedido.getMetodoPagamento() == MetodoPagamento.DINHEIRO
+                    || pedido.getMetodoPagamento() == MetodoPagamento.CARTAO) {
                 parcela.setStatus(StatusPagamento.PAGO);
                 parcela.setDataPagamento(LocalDate.now());
             } else {
@@ -143,14 +100,12 @@ public class PedidoClienteService {
         PedidoCliente pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
-        // Devolve os produtos ao estoque antes de deletar
-        pedido.getPecas().forEach(item ->
-                produtoService.restaurarEstoque(item.getProduto().getId(), item.getQuantidadeComprada())
-        );
-
-        //Salvar no fluxo de caixa
-        if(pedido.getMetodoPagamento() != MetodoPagamento.PROMISSORIA) {
-            movimentacaoCaixaService.registrarMovimentacao(String.format("Reembolso compra a vista - Cliente %s", pedido.getIdentificadorOrigem()), pedido.getValorTotalPedido(), TipoMovimentacao.SAIDA);
+        if (pedido.getMetodoPagamento() != MetodoPagamento.PROMISSORIA) {
+            movimentacaoCaixaService.registrarMovimentacao(
+                    String.format("Reembolso compra a vista - Cliente %s", pedido.getIdentificadorOrigem()),
+                    pedido.getValorTotalPedido(),
+                    TipoMovimentacao.SAIDA
+            );
         }
 
         pedidoRepository.delete(pedido);
@@ -177,18 +132,7 @@ public class PedidoClienteService {
                 pedido.getValorTotalPedido(),
                 pedido.getDataPedido(),
                 pedido.getMetodoPagamento(),
-                pedido.isEmAberto(pedido.getMetodoPagamento()),
-                pedido.getPecas().stream()
-                        .map(this::mapToItemPedidoResponseDTO).toList()
-        );
-    }
-
-    private ItemPedidoResponseDTO mapToItemPedidoResponseDTO(ItemPedido item) {
-        return new ItemPedidoResponseDTO(
-                item.getId(),
-                item.getProduto().getNome(),
-                item.getPrecoUnitarioNoMomento(),
-                item.getQuantidadeComprada()
+                pedido.isEmAberto(pedido.getMetodoPagamento())
         );
     }
 }

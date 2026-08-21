@@ -22,11 +22,9 @@ export default function Layout() {
   const titulos = {
     '/': 'Dashboard',
     '/clientes': 'Clientes',
-    '/estoque': 'Estoque',
     '/compras': 'Compras Loja',
     '/vendas': 'Vendas Clientes', 
     '/nova-venda': 'Nova Venda',
-    '/novo-produto': 'Novo Produto',
     '/nova-compra': 'Nova Compra',
     '/novo-cliente': 'Novo Cliente',
     '/movimentacoes': 'Movimentações'
@@ -50,7 +48,6 @@ export default function Layout() {
         <nav className="menu">
           <Link to="/" onClick={handleLinkClick} className={location.pathname === '/' ? 'ativo' : ''}>Dashboard</Link>
           <Link to="/clientes" onClick={handleLinkClick} className={location.pathname === '/clientes' ? 'ativo' : ''}>Clientes</Link>
-          <Link to="/estoque" onClick={handleLinkClick} className={location.pathname === '/estoque' ? 'ativo' : ''}>Estoque</Link>
           <Link to="/compras" onClick={handleLinkClick} className={location.pathname === '/compras' ? 'ativo' : ''}>Compras loja</Link>
           <Link to="/vendas" onClick={handleLinkClick} className={location.pathname === '/vendas' ? 'ativo' : ''}>Vendas clientes</Link>
           <Link to="/movimentacoes" onClick={handleLinkClick} className={location.pathname === '/movimentacoes' ? 'ativo' : ''}>Movimentações</Link>
