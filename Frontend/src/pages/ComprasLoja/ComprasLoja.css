@@ -60,7 +60,6 @@
   width: 140px;
 }
 
-/* O seletor de ano não precisa de ícone à esquerda, então ajustamos o padding */
 .seletor-ano {
   padding-left: 12px;
   width: 90px;
@@ -96,10 +95,11 @@
   margin-top: 20px;
 }
 
+/* --- ESTILO DO CARD DE COMPRA (mesmo padrão do venda-item) --- */
 .compra-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
   padding: 24px 0;
   border-bottom: 1px solid #EAEAEA;
 }
@@ -108,10 +108,17 @@
   border-bottom: none;
 }
 
+.compra-linha-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
 .compra-info-principal {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .compra-cartao {
@@ -121,34 +128,62 @@
   margin: 0;
 }
 
-.compra-data {
-  font-size: 15px;
-  color: #666;
-  font-weight: 400;
+.compra-status-badge {
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.compra-info-valores {
+.status-pendente {
+  color: #8A6D3B;
+}
+
+.status-pago {
+  color: #3C763D;
+}
+
+.compra-meta {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
 }
 
-.compra-valor-total {
-  font-size: 18px;
-  font-weight: 500;
-  color: #222;
+.compra-data {
+  font-size: 15px;
+  color: #666;
+  font-weight: 400;
 }
 
-.compra-status {
-  font-size: 14px;
-  font-weight: 500;
+.compra-linha-inferior {
+  display: flex;
+  justify-content: flex-start;
 }
 
-.status-aberto {
-  color: #8A6D3B; /* Um tom de ocre/alaranjado discreto */
+.compra-detalhes {
+  font-size: 16px;
+  color: #555;
+  font-weight: 400;
 }
 
-.status-pago {
-  color: #3C763D; /* Um verde escuro discreto */
+/* --- BOTÃO DE DELETAR NO CARD --- */
+.btn-deletar-card {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-deletar-card:hover {
+  background-color: #FEE2E2;
+  transform: scale(1.1);
+}
+
+.btn-deletar-card:active {
+  transform: scale(0.95);
 }

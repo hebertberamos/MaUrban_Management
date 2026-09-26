@@ -114,7 +114,12 @@ export default function VendasClientes() {
               <div key={venda.id} className="venda-item">
                 
                 <div className="venda-linha-superior">
-                  <h3 className="venda-nome-cliente">{venda.nomeCliente}</h3>
+                  <div className="venda-info-principal">
+                    <h3 className="venda-nome-cliente">{venda.nomeCliente}</h3>
+                    <span className={`venda-status-badge ${venda.emAberto ? 'status-pendente' : 'status-pago'}`}>
+                      {venda.emAberto ? 'Pagamento Pendente' : 'Pago'}
+                    </span>
+                  </div>
                   <div className="venda-meta">
                     <span className="venda-data">{formatarData(venda.dataPedido)}</span>
                     <button 

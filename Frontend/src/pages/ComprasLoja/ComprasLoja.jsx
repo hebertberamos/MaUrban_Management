@@ -108,10 +108,19 @@ export default function ComprasLoja() {
     { valor: 11, nome: 'Novembro' }, { valor: 12, nome: 'Dezembro' }
   ];
 
+  const formatarCartao = (cartao) => {
+    switch (cartao) {
+      case 'C6': return 'C6';
+      case 'NUBANK': return 'Nubank';
+      case 'PICPAY': return 'PicPay';
+      default: return cartao;
+    }
+  };
+
   return (
     <div className="compras-container">
       
-     {/* Cabeçalho */}
+      {/* Cabeçalho */}
       <div className="compras-header">
         <div className="compras-acoes-topo">
           <button 
@@ -124,14 +133,13 @@ export default function ComprasLoja() {
           <button 
             className="btn-nova-despesa"
             onClick={() => navigate('/nova-despesa')}
-            style={{ marginLeft: '10px' }} // Adicionado um espaçamento básico (você pode mover para o CSS)
+            style={{ marginLeft: '10px' }}
           >
             Registrar despesa
           </button>
         </div>
         
         <div className="compras-filtros">
-          {/* Seletor de Mês */}
           <div className="input-com-icone">
             <span className="icone-pequeno">📅</span>
             <select 
@@ -145,7 +153,6 @@ export default function ComprasLoja() {
             </select>
           </div>
 
-          {/* Seletor de Ano */}
           <div className="input-com-icone">
             <select 
               value={ano} 
@@ -181,60 +188,49 @@ export default function ComprasLoja() {
           ) : comprasFiltradas.length === 0 ? (
             <p className="sem-dados">Nenhuma compra encontrada para este período.</p>
           ) : (
-            comprasFiltradas.map((compra) => (
-              <div key={compra.id} className="compra-item">
-                
-                {/* Lado Esquerdo */}
-                <div className="compra-info-principal">
-                  <h3 className="compra-cartao">Cartão: {compra.cartao}</h3>
-                  <div className="compra-meta">
-                    <span className="compra-data">Data: {formatarData(compra.dataPedido)}</span>
-                    <button
-                      className="btn-deletar-card"
-                      onClick={() => handleDeletarCompra(compra.id)}
-                      title="Deletar pedido"
-                    >
-                      Deletar
-                    </button>
-                  </div>
-                </div>
+            comprasFiltradas.map((compra) => {
+              const parcelas = compra.parcelas || [];
+              const totalParcelas = parcelas.length || (compra.quantidadeDeParcelas || 0);
+              const pagas = parcelas.filter(p => p.status === 'PAGO').length;
 
-                {/* Lado Direito */}
-                <div className="compra-info-valores">
-                  <span className="compra-valor-total">
-                    {formatarMoeda(compra.valorTotal)}
-                  </span>
-                  {(() => {
-                    const parcelas = compra.parcelas || [];
-                    let statusCompra = 'PAGO';
-                    if (parcelas.length > 0) {
-                      const total = parcelas.length;
-                      const pagas = parcelas.filter(p => p.status === 'PAGO').length;
-                      statusCompra = (pagas === total) ? 'PAGO' : 'PENDENTE';
-                    } else if (typeof compra.emAberto === 'boolean') {
-                      statusCompra = compra.emAberto ? 'PENDENTE' : 'PAGO';
-                    }
+              let statusCompra = 'PAGO';
+              if (parcelas.length > 0) {
+                statusCompra = (pagas === parcelas.length) ? 'PAGO' : 'PENDENTE';
+              } else if (typeof compra.emAberto === 'boolean') {
+                statusCompra = compra.emAberto ? 'PENDENTE' : 'PAGO';
+              }
 
-                    return (
-                      <span className={`compra-status ${statusCompra === 'PENDENTE' ? 'status-aberto' : 'status-pago'}`}>
+              return (
+                <div key={compra.id} className="compra-item">
+                  
+                  <div className="compra-linha-superior">
+                    <div className="compra-info-principal">
+                      <h3 className="compra-cartao">Cartão: {formatarCartao(compra.cartao)}</h3>
+                      <span className={`compra-status-badge ${statusCompra === 'PENDENTE' ? 'status-pendente' : 'status-pago'}`}>
                         {statusCompra === 'PENDENTE' ? 'Pendente' : 'Pago'}
                       </span>
-                    );
-                  })()}
+                    </div>
+                    <div className="compra-meta">
+                      <span className="compra-data">{formatarData(compra.dataPedido)}</span>
+                      <button
+                        className="btn-deletar-card"
+                        onClick={() => handleDeletarCompra(compra.id)}
+                        title="Deletar pedido"
+                      >
+                        Deletar
+                      </button>
+                    </div>
+                  </div>
 
-                  {/* Exibir número de parcelas pagas e total */}
-                  <span className="compra-parcelas">
-                    {(() => {
-                      const parcelas = compra.parcelas || [];
-                      const total = parcelas.length || (compra.quantidadeDeParcelas || 0);
-                      const pagas = parcelas.filter(p => p.status === 'PAGO').length;
-                      return `${pagas} of ${total}`;
-                    })()}
-                  </span>
+                  <div className="compra-linha-inferior">
+                    <span className="compra-detalhes">
+                      Total: {formatarMoeda(compra.valorTotal)} | Parcelas: {pagas} de {totalParcelas}
+                    </span>
+                  </div>
+
                 </div>
-
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

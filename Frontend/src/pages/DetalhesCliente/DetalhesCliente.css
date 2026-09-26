@@ -1,5 +1,3 @@
-@import '../../styles/pedidoCard.css';
-
 .detalhes-cliente-container {
   display: flex;
   flex-direction: column;
