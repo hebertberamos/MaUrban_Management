@@ -1,5 +1,6 @@
 package com.managemente.MaUrban.entities;
 
+import com.managemente.MaUrban.entities.enums.MetodoPagamento;
 import com.managemente.MaUrban.entities.enums.StatusPagamento;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,9 +34,6 @@ public abstract class Pedido {
     private LocalDate dataPedido;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemPedido> pecas = new ArrayList<>();
-
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Parcela> parcelas = new ArrayList<>();
 
 
@@ -48,8 +46,13 @@ public abstract class Pedido {
     }
 
     @Transient
-    public boolean isEmAberto() {
-        return getValorJaPago() < valorTotalPedido;
+    public boolean isEmAberto(MetodoPagamento metodoPagamento) {
+        if(metodoPagamento.equals(MetodoPagamento.PROMISSORIA)) {
+            return getValorJaPago() < valorTotalPedido;
+        }
+        return false;
     }
 
+    @Transient
+    public abstract String getIdentificadorOrigem();
 }

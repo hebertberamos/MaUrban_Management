@@ -1,0 +1,12 @@
+/* src/index.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: #F8F9FA; /* Fundo cinza bem claro, idêntico ao protótipo */
+  color: #333;
+}

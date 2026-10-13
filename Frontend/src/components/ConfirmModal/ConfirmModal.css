@@ -1,0 +1,73 @@
+/* src/components/ConfirmModal/ConfirmModal.css */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2100;
+  padding: 16px;
+}
+
+.confirm-modal {
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-titulo {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.confirm-mensagem {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.confirm-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* .btn-outline já existe em vários lugares do projeto (NovoCliente.css,
+   NovaVenda.css, etc.) com o mesmo visual — aqui redeclaramos localmente
+   para o modal não depender de nenhum CSS externo estar carregado. */
+.confirm-modal .btn-outline {
+  background-color: transparent;
+  color: #555;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.confirm-modal .btn-outline:hover {
+  background-color: #F0F0F0;
+}
+
+.btn-confirmar-perigo {
+  background-color: #A94442;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-confirmar-perigo:hover {
+  background-color: #8B3A38;
+}

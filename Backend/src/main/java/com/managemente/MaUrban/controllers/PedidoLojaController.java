@@ -13,9 +13,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/pedidos/loja")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class PedidoLojaController {
 
     private final PedidoLojaService pedidoService;
+
+    @GetMapping
+    public ResponseEntity<List<PedidoLojaResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(pedidoService.listarTodos());
+    }
 
     @PostMapping
     public ResponseEntity<PedidoLojaResponseDTO> criarCompra(@RequestBody PedidoLojaRequestDTO dto) {
@@ -33,8 +39,8 @@ public class PedidoLojaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/mes/{ano}/{mes}")
-    public ResponseEntity<List<PedidoLojaResponseDTO>> listarPorMes(@PathVariable int ano, @PathVariable int mes) {
+    @GetMapping("/mes")
+    public ResponseEntity<List<PedidoLojaResponseDTO>> listarPorMes(@RequestParam int ano, @RequestParam int mes) {
         return ResponseEntity.ok(pedidoService.listarPorMes(ano, mes));
     }
 }

@@ -1,11 +1,13 @@
 package com.managemente.MaUrban.servicies;
 
 import com.managemente.MaUrban.dtos.ItemPedidoRequestDTO;
+import com.managemente.MaUrban.dtos.ItemPedidoResponseDTO;
 import com.managemente.MaUrban.dtos.PedidoClienteRequestDTO;
 import com.managemente.MaUrban.dtos.PedidoResponseDTO;
 import com.managemente.MaUrban.entities.*;
 import com.managemente.MaUrban.entities.enums.MetodoPagamento;
 import com.managemente.MaUrban.entities.enums.StatusPagamento;
+import com.managemente.MaUrban.entities.enums.TipoMovimentacao;
 import com.managemente.MaUrban.repositories.ClienteRepository;
 import com.managemente.MaUrban.repositories.PedidoClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,8 @@ public class PedidoClienteService {
 
     private final PedidoClienteRepository pedidoRepository;
     private final ClienteRepository clienteRepository;
-    private final ProdutoService produtoService; // Reaproveitamos a lógica de estoque
+    private final ProdutoService produtoService;
+    private final MovimentacaoCaixaService movimentacaoCaixaService;
 
     @Transactional
     public PedidoResponseDTO criarPedido(PedidoClienteRequestDTO dto) {
@@ -56,9 +59,15 @@ public class PedidoClienteService {
         pedido.setPecas(itens);
         pedido.setValorTotalPedido(valorTotal);
 
-        // 4. Gera as parcelas financeiras
-        List<Parcela> parcelas = gerarParcelas(pedido, dto.quantidadeDeParcelas());
-        pedido.setParcelas(parcelas);
+        // 4. Gera as parcelas financeiras - caso a forma de pagamento seja na promissoria
+        //    Gerar o fluxo de caixa de entrada - caso a forma de pagamento seja PIX, Dinheiro ou Cartao
+        if(pedido.getMetodoPagamento() == MetodoPagamento.PROMISSORIA) {
+            List<Parcela> parcelas = gerarParcelas(pedido, dto.quantidadeDeParcelas());
+            pedido.setParcelas(parcelas);
+        }
+        else {
+            movimentacaoCaixaService.registrarMovimentacao(String.format("Recebimento à vista - Cliente %s", pedido.getIdentificadorOrigem()), pedido.getValorTotalPedido(), TipoMovimentacao.ENTRADA);
+        }
 
         // 5. Salva tudo no banco (CascadeType.ALL fará o Hibernate salvar itens e parcelas automaticamente)
         pedido = pedidoRepository.save(pedido);
@@ -117,8 +126,8 @@ public class PedidoClienteService {
             parcela.setValorParcela(valorDaParcela);
             parcela.setDataVencimento(LocalDate.now().plusMonths(i));
 
-            // Se for PIX ou Dinheiro, já entra como PAGO e com data de hoje
-            if (pedido.getMetodoPagamento() == MetodoPagamento.PIX || pedido.getMetodoPagamento() == MetodoPagamento.DINHEIRO) {
+            // Se for PIX, Dinheiro ou Cartão, já entra como PAGO e com data de hoje
+            if (pedido.getMetodoPagamento() == MetodoPagamento.PIX || pedido.getMetodoPagamento() == MetodoPagamento.DINHEIRO || pedido.getMetodoPagamento() == MetodoPagamento.CARTAO) {
                 parcela.setStatus(StatusPagamento.PAGO);
                 parcela.setDataPagamento(LocalDate.now());
             } else {
@@ -138,6 +147,11 @@ public class PedidoClienteService {
         pedido.getPecas().forEach(item ->
                 produtoService.restaurarEstoque(item.getProduto().getId(), item.getQuantidadeComprada())
         );
+
+        //Salvar no fluxo de caixa
+        if(pedido.getMetodoPagamento() != MetodoPagamento.PROMISSORIA) {
+            movimentacaoCaixaService.registrarMovimentacao(String.format("Reembolso compra a vista - Cliente %s", pedido.getIdentificadorOrigem()), pedido.getValorTotalPedido(), TipoMovimentacao.SAIDA);
+        }
 
         pedidoRepository.delete(pedido);
     }
@@ -163,7 +177,18 @@ public class PedidoClienteService {
                 pedido.getValorTotalPedido(),
                 pedido.getDataPedido(),
                 pedido.getMetodoPagamento(),
-                pedido.isEmAberto()
+                pedido.isEmAberto(pedido.getMetodoPagamento()),
+                pedido.getPecas().stream()
+                        .map(this::mapToItemPedidoResponseDTO).toList()
+        );
+    }
+
+    private ItemPedidoResponseDTO mapToItemPedidoResponseDTO(ItemPedido item) {
+        return new ItemPedidoResponseDTO(
+                item.getId(),
+                item.getProduto().getNome(),
+                item.getPrecoUnitarioNoMomento(),
+                item.getQuantidadeComprada()
         );
     }
 }

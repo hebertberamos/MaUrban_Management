@@ -1,0 +1,181 @@
+﻿/* Responsive styles for phone screens and narrow viewports */
+html,
+body,
+#root {
+  min-width: 0;
+}
+
+/* Menu toggle button - hidden by default, shown on narrow screens */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 8px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+/* Backdrop for overlay sidebar */
+.sidebar-backdrop {
+  display: none;
+}
+
+/* When viewport is 800px or narrower, keep the sidebar as a collapsible off-canvas panel */
+@media (max-width: 800px) {
+  /* Keep the main layout as columns visually (sidebar stays off-canvas) */
+  .layout-container {
+    /* do not change flex-direction: keep row so semantics remain the same */
+    height: 100vh;
+  }
+
+  /* off-canvas sidebar */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 240px;
+    transform: translateX(-110%); /* hidden by default */
+    transition: transform 260ms ease-in-out;
+    z-index: 1100;
+    background: #FFFFFF; /* keep same background */
+    border-right: 1px solid #E5E5E5;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  /* visible state when toggled open */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* backdrop shown when sidebar is open */
+  .sidebar-backdrop.show {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1050;
+  }
+
+  /* keep logo compact */
+  .logo-placeholder {
+    height: auto;
+    padding: 14px 16px;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .logo-placeholder span {
+    font-size: 18px;
+  }
+
+  /* menu remains vertical inside the off-canvas sidebar */
+  .menu {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .menu a {
+    padding: 10px 12px;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  /* show the hamburger button in the header */
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* main content should not reserve space for sidebar when it's off-canvas */
+  .main-content {
+    margin-left: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .top-header {
+    padding: 10px 12px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #E5E5E5;
+  }
+
+  .top-header h1 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .page-content {
+    padding: 14px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  /* some components should stack vertically on narrow screens */
+  .cards-container,
+  .action-buttons,
+  .clientes-filtros,
+  .compras-filtros,
+  .estoque-filtros,
+  .vendas-filtros,
+  .filtros-topo,
+  .form-row,
+  .form-actions,
+  .produto-item-row,
+  .venda-linha-superior,
+  .venda-linha-inferior,
+  .venda-direita-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-dark,
+  .btn-outline,
+  .btn-novo-cliente,
+  .btn-nova-compra,
+  .btn-novo-produto,
+  .btn-nova-venda,
+  .btn-adicionar-item {
+    width: 100%;
+  }
+
+  .select-filtro,
+  .input-busca,
+  .seletor-ano,
+  .form-input {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Extra small tweaks for very small phones */
+@media (max-width: 430px) {
+  .top-header h1 {
+    font-size: 16px;
+  }
+
+  .page-content {
+    padding: 10px;
+  }
+
+  .logo-placeholder {
+    gap: 8px;
+  }
+
+  .menu a {
+    font-size: 13px;
+    padding: 10px;
+  }
+}

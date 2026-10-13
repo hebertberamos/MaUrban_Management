@@ -1,0 +1,84 @@
+/* src/components/ListaDebitoMensal/DebitoMensal.css */
+.debito-mensal-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.debito-mensal-container h3 {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.debito-lista {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.debito-lista::-webkit-scrollbar {
+  width: 8px;
+}
+.debito-lista::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  border-radius: 4px;
+}
+.debito-lista::-webkit-scrollbar-thumb {
+  background: #ccc; 
+  border-radius: 4px;
+}
+
+.debito-card {
+  background-color: #F8F9FA;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  transition: all 0.2s ease;
+}
+
+.debito-card:hover {
+  background-color: #F1F3F5;
+}
+
+.debito-info-esquerda {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.debito-nome-cartao {
+  font-size: 14px;
+  color: #666;
+}
+
+.debito-valor {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.debito-status {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.status-pago {
+  color: #666; 
+}
+
+.status-nao-pago {
+  color: #999; 
+}
+
+.debito-vazio {
+  color: #888;
+  font-style: italic;
+  font-size: 14px;
+}

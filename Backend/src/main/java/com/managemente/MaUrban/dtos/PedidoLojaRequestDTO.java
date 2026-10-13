@@ -6,6 +6,6 @@ import java.util.List;
 
 public record PedidoLojaRequestDTO(
         Cartao cartao,
-        List<ItemPedidoRequestDTO> itens,
+        double valorTotal,
         int quantidadeDeParcelas
 ) {}
