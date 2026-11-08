@@ -1,4 +1,6 @@
 // Base API configuration
+import { getCsrfToken } from './authService';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 // Helper function to handle API requests
@@ -6,16 +8,26 @@ async function apiRequest(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   
   try {
+    const method = options.method || 'GET';
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
+
+    if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method.toUpperCase())) {
+      headers['X-XSRF-TOKEN'] = await getCsrfToken();
+    }
+
     const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
+      credentials: 'include',
+      headers,
       ...options,
     });
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      const error = new Error(`API Error: ${response.status} ${response.statusText}`);
+      error.status = response.status;
+      throw error;
     }
 
     // DELETE or response without content (204 No Content) should not attempt to parse JSON
@@ -26,6 +38,9 @@ async function apiRequest(endpoint, options = {}) {
 
     return jsonText ? JSON.parse(jsonText) : null;
   } catch (error) {
+    if (error.status === 401) {
+      window.dispatchEvent(new Event('auth:unauthorized'));
+    }
     console.error(`API Request Failed: ${endpoint}`, error);
     throw error;
   }

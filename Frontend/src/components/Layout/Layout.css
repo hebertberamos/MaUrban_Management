@@ -74,6 +74,17 @@
   padding: 0 32px;
 }
 
+.logout-button {
+  margin-left: auto;
+  padding: 8px 14px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  font: inherit;
+}
+
 .top-header h1 {
   font-size: 20px;
   font-weight: 400;

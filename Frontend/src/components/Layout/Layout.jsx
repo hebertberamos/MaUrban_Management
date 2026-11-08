@@ -1,11 +1,14 @@
 ﻿import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import MaUrbanIcon from '../../assets/MaUrban-icon.svg';
+import toast from 'react-hot-toast';
+import { useAuth } from '../Auth/useAuth';
 import './Layout.css'; 
 
 export default function Layout() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { signOut } = useAuth();
 
   // Fechar o menu mobile ao redimensionar para larguras maiores que 800px
   useEffect(() => {
@@ -37,6 +40,14 @@ export default function Layout() {
   const handleLinkClick = () => {
     // Fecha o menu mobile quando o usuário navega
     if (mobileMenuOpen) setMobileMenuOpen(false)
+  }
+
+  async function handleLogout() {
+    try {
+      await signOut();
+    } catch (error) {
+      toast.error(error.message);
+    }
   }
 
   return (
@@ -79,6 +90,9 @@ export default function Layout() {
           </button>
 
           <h1>{tituloAtual}</h1>
+          <button className="logout-button" type="button" onClick={handleLogout}>
+            Sair
+          </button>
         </header>
 
         {/* Aqui é onde o conteúdo de cada tela será renderizado */}

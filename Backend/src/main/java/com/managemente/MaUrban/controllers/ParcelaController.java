@@ -10,7 +10,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/parcelas")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class ParcelaController {
 
     private final ParcelaService parcelaService;

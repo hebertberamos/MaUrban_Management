@@ -13,7 +13,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/produtos")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class ProdutoController {
 
     private final ProdutoService produtoService;

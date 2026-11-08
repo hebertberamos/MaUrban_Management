@@ -14,7 +14,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/pedidos/cliente")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class PedidoClienteController {
 
     private final PedidoClienteService pedidoService;

@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/movimentacoes")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class MovimentacaoCaixaController {
 
     private final MovimentacaoCaixaService service;

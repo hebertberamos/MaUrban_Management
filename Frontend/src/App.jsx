@@ -13,29 +13,34 @@ import NovoCliente from './pages/NovoCliente/NovoCliente';
 import Movimentacoes from './pages/Movimentacoes/Movimentacoes';
 import NovaDespesa from './pages/NovaDespesa/NovaDespesa';
 import { ConfirmProvider } from './components/ConfirmModal/ConfirmModal';
+import { AuthProvider } from './components/Auth/AuthProvider';
+import ProtectedRoute from './components/Auth/ProtectedRoute';
+import Login from './pages/Login/Login';
 
 export default function App() {
   return (
     <ConfirmProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* O Layout abraça todas as rotas filhas */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="clientes" element={<Clientes />} />
-            <Route path="estoque" element={<Estoque />} />
-            <Route path="compras" element={<ComprasLoja />} />
-            <Route path="vendas" element={<VendasClientes />} />
-            <Route path="nova-venda" element={<NovaVenda />} />
-            <Route path="novo-produto" element={<NovoProduto />} />
-            <Route path="nova-compra" element={<NovaCompra />} />
-            <Route path="clientes/:id" element={<DetalhesCliente />} />
-            <Route path="novo-cliente" element={<NovoCliente />} />
-            <Route path="movimentacoes" element={<Movimentacoes />} />
-            <Route path="nova-despesa" element={<NovaDespesa />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+              <Route index element={<Dashboard />} />
+              <Route path="clientes" element={<Clientes />} />
+              <Route path="estoque" element={<Estoque />} />
+              <Route path="compras" element={<ComprasLoja />} />
+              <Route path="vendas" element={<VendasClientes />} />
+              <Route path="nova-venda" element={<NovaVenda />} />
+              <Route path="novo-produto" element={<NovoProduto />} />
+              <Route path="nova-compra" element={<NovaCompra />} />
+              <Route path="clientes/:id" element={<DetalhesCliente />} />
+              <Route path="novo-cliente" element={<NovoCliente />} />
+              <Route path="movimentacoes" element={<Movimentacoes />} />
+              <Route path="nova-despesa" element={<NovaDespesa />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ConfirmProvider>
   );
 }
