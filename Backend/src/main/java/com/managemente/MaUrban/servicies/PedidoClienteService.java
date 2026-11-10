@@ -59,14 +59,13 @@ public class PedidoClienteService {
         pedido.setPecas(itens);
         pedido.setValorTotalPedido(valorTotal);
 
-        // 4. Gera as parcelas financeiras - caso a forma de pagamento seja na promissoria
-        //    Gerar o fluxo de caixa de entrada - caso a forma de pagamento seja PIX, Dinheiro ou Cartao
-        if(pedido.getMetodoPagamento() == MetodoPagamento.PROMISSORIA) {
-            List<Parcela> parcelas = gerarParcelas(pedido, dto.quantidadeDeParcelas());
-            pedido.setParcelas(parcelas);
-        }
-        else {
-            movimentacaoCaixaService.registrarMovimentacao(String.format("Recebimento à vista - Cliente %s", pedido.getIdentificadorOrigem()), pedido.getValorTotalPedido(), TipoMovimentacao.ENTRADA);
+        // 4. Promissória apenas aumenta o débito do cliente (calculado no ClienteRepository).
+        //    Demais formas de pagamento entram direto no caixa, sem vínculo com o débito do cliente.
+        if (pedido.getMetodoPagamento() != MetodoPagamento.PROMISSORIA) {
+            movimentacaoCaixaService.registrarMovimentacao(
+                    String.format("Recebimento à vista - Cliente %s", pedido.getIdentificadorOrigem()),
+                    pedido.getValorTotalPedido(),
+                    TipoMovimentacao.ENTRADA);
         }
 
         // 5. Salva tudo no banco (CascadeType.ALL fará o Hibernate salvar itens e parcelas automaticamente)
@@ -87,7 +86,6 @@ public class PedidoClienteService {
 
         // 2. Limpa os registros antigos (O JPA vai deletar do banco devido ao orphanRemoval)
         pedido.getPecas().clear();
-        pedido.getParcelas().clear();
 
         // 3. Atualiza os dados básicos
         pedido.setMetodoPagamento(dto.metodoPagamento());
@@ -109,33 +107,8 @@ public class PedidoClienteService {
 
         pedido.setValorTotalPedido(valorTotal);
 
-        // 5. Recalcula as parcelas
-        pedido.getParcelas().addAll(gerarParcelas(pedido, dto.quantidadeDeParcelas()));
-
         pedido = pedidoRepository.save(pedido);
         return mapToResponseDTO(pedido);
-    }
-
-    private List<Parcela> gerarParcelas(PedidoCliente pedido, int quantidadeDeParcelas) {
-        List<Parcela> parcelas = new ArrayList<>();
-        double valorDaParcela = pedido.getValorTotalPedido() / quantidadeDeParcelas;
-
-        for (int i = 1; i <= quantidadeDeParcelas; i++) {
-            Parcela parcela = new Parcela();
-            parcela.setPedido(pedido);
-            parcela.setValorParcela(valorDaParcela);
-            parcela.setDataVencimento(LocalDate.now().plusMonths(i));
-
-            // Se for PIX, Dinheiro ou Cartão, já entra como PAGO e com data de hoje
-            if (pedido.getMetodoPagamento() == MetodoPagamento.PIX || pedido.getMetodoPagamento() == MetodoPagamento.DINHEIRO || pedido.getMetodoPagamento() == MetodoPagamento.CARTAO) {
-                parcela.setStatus(StatusPagamento.PAGO);
-                parcela.setDataPagamento(LocalDate.now());
-            } else {
-                parcela.setStatus(StatusPagamento.PENDENTE);
-            }
-            parcelas.add(parcela);
-        }
-        return parcelas;
     }
 
     @Transactional
@@ -177,7 +150,6 @@ public class PedidoClienteService {
                 pedido.getValorTotalPedido(),
                 pedido.getDataPedido(),
                 pedido.getMetodoPagamento(),
-                pedido.isEmAberto(pedido.getMetodoPagamento()),
                 pedido.getPecas().stream()
                         .map(this::mapToItemPedidoResponseDTO).toList()
         );

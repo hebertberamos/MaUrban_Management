@@ -38,4 +38,7 @@ public class MovimentacaoCaixa {
     @Column(name = "data_movimentacao", nullable = false)
     private LocalDateTime dataMovimentacao;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cliente_id")   // nulo em despesas, vendas à vista, etc.
+    private Cliente cliente;
 }

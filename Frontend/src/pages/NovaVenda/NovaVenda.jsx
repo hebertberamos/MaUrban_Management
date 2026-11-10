@@ -23,10 +23,10 @@ export default function NovaVenda() {
     ]
   });
 
-    const dadosParaEnvio = {
-  ...pedido,
-  quantidadeDeParcelas: pedido.metodoPagamento === 'PROMISSORIA' ? pedido.quantidadeDeParcelas : 1
-};
+//     const dadosParaEnvio = {
+//   ...pedido,
+//   quantidadeDeParcelas: pedido.metodoPagamento === 'PROMISSORIA' ? pedido.quantidadeDeParcelas : 1
+// };
 
   // Busca clientes e produtos ao carregar a tela
   useEffect(() => {
@@ -81,14 +81,13 @@ export default function NovaVenda() {
     }
 
     try {
-      await pedidosService.criarPedidoCliente(dadosParaEnvio);
+      await pedidosService.criarPedidoCliente(pedido);
       
       toast.success("Venda registrada com sucesso!");
       // Limpa o formulário
       setPedido({
         clienteId: '',
         metodoPagamento: 'CARTAO',
-        quantidadeDeParcelas: 1,
         itens: [{ produtoId: '', quantidade: 1 }]
       });
       navigate('/vendas');
@@ -138,21 +137,6 @@ export default function NovaVenda() {
                 <option value="PROMISSORIA">Promissória</option>
               </select>
             </div>
-
-            {/* O campo de parcelas SÓ aparece se o método for PROMISSORIA */}
-            {pedido.metodoPagamento === 'PROMISSORIA' && (
-              <div className="form-group flex-1">
-                <label>Qtd. de Parcelas</label>
-                <input 
-                  type="number" 
-                  className="form-input"
-                  min="1"
-                  max="24"
-                  value={pedido.quantidadeDeParcelas}
-                  onChange={(e) => setPedido({...pedido, quantidadeDeParcelas: parseInt(e.target.value) || 1})}
-                />
-              </div>
-            )}
           </div>
         </div>
 

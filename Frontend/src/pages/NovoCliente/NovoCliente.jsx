@@ -8,6 +8,7 @@ export default function NovoCliente() {
   const navigate = useNavigate();
   const [nome, setNome] = useState('');
   const [carregando, setCarregando] = useState(false);
+  const [valorDebito, setValorDebito] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,10 +19,17 @@ export default function NovoCliente() {
       return;
     }
 
+    if (valorDebito !== '' && parseFloat(valorDebito) < 0) {
+      toast.error("O débito anterior não pode ser negativo.");
+      return;
+    }
+
+
+
     setCarregando(true);
 
     try {
-      await clientesService.criarCliente(nome);
+      await clientesService.criarCliente(nome, valorDebito);
       
       toast.success("Cliente cadastrado com sucesso!");
       navigate('/clientes'); // Retorna para a listagem de clientes
@@ -46,16 +54,27 @@ export default function NovoCliente() {
           <h3>Dados Cadastrais</h3>
           
           <div className="form-group">
-            <label htmlFor="nome-cliente">Nome Completo</label>
-            <input 
+            <label htmlFor="nome-cliente">Nome do Cliente</label>
+            <input
               id="nome-cliente"
-              type="text" 
+              type="text"
               className="form-input"
-              placeholder="Ex: Celinha, Mayane de Lima..."
+              placeholder="Nome do cliente"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               disabled={carregando}
-              autoFocus
+            />
+            <label htmlFor="debito-cliente">Débito anterior (R$) - opcional</label>
+            <input
+              id="debito-cliente"
+              type="number"
+              step="0.01"
+              min="0"
+              className="form-input"
+              placeholder="0,00"
+              value={valorDebito}
+              onChange={(e) => setValorDebito(e.target.value)}
+              disabled={carregando}
             />
           </div>
         </div>

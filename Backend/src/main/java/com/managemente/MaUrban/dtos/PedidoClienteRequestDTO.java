@@ -8,6 +8,5 @@ import java.util.UUID;
 public record PedidoClienteRequestDTO(
         UUID clienteId,
         MetodoPagamento metodoPagamento,
-        List<ItemPedidoRequestDTO> itens,
-        int quantidadeDeParcelas
+        List<ItemPedidoRequestDTO> itens
 ) {}

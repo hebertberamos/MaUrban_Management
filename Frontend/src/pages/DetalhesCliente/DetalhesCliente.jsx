@@ -5,6 +5,7 @@ import './DetalhesCliente.css';
 import * as pedidosService from '../../services/pedidosService';
 import { formatarMoeda, formatarData, formatarMetodoPagamento } from '../../utils/formatters';
 import { useConfirm } from '../../components/ConfirmModal/ConfirmModal';
+import * as clientesService from '../../services/clientesService';
 
 export default function DetalhesCliente() {
   const { id } = useParams(); // Pega o ID do cliente da URL
@@ -14,6 +15,10 @@ export default function DetalhesCliente() {
   const [pedidos, setPedidos] = useState([]);
   const [nomeCliente, setNomeCliente] = useState("");
   const [carregando, setCarregando] = useState(false);
+
+  const [resumo, setResumo] = useState(null);
+  const [valorPagamento, setValorPagamento] = useState('');
+  const [salvandoPagamento, setSalvandoPagamento] = useState(false);
 
   useEffect(() => {
     const buscarPedidosDoCliente = async () => {
@@ -40,6 +45,21 @@ export default function DetalhesCliente() {
     }
   }, [id]);
 
+  useEffect(() => {
+    const buscarResumo = async () => {
+      try {
+        const dados = await clientesService.obterResumoCliente(id);
+        setResumo(dados);
+      } catch (error) {
+        console.error("Erro ao buscar resumo do cliente:", error);
+      }
+    };
+
+    if (id) {
+      buscarResumo();
+    }
+  }, [id]);
+
   const handleDeletarPedido = async (idPedido) => {
     // Antes: const confirmar = window.confirm("...")
     // Agora: modal customizado, chamado via await (retorna true/false)
@@ -61,6 +81,29 @@ export default function DetalhesCliente() {
     }
   };
 
+  const handleRegistrarPagamento = async (e) => {
+    e.preventDefault();
+    const valor = parseFloat(valorPagamento);
+
+    if (!valor || valor <= 0) {
+      toast.error("Informe um valor maior que zero.");
+      return;
+    }
+
+    setSalvandoPagamento(true);
+    try {
+      const atualizado = await clientesService.registrarPagamento(id, valor);
+      setResumo(atualizado);
+      setValorPagamento('');
+      toast.success("Pagamento registrado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao registrar pagamento:", error);
+      toast.error("Erro ao registrar o pagamento. O valor não pode ser maior que o débito.");
+    } finally {
+      setSalvandoPagamento(false);
+    }
+  };
+
   return (
     <div className="detalhes-cliente-container">
       
@@ -70,8 +113,31 @@ export default function DetalhesCliente() {
           ← Voltar
         </button>
         <div className="titulo-cliente">
-          <h2>Pedidos de {nomeCliente || 'Cliente'}</h2>
+          <h2>Compras {resumo?.nome || nomeCliente || 'Cliente'}</h2>
         </div>
+      </div>
+
+      <div className="saldo-card">
+        <div className="saldo-info">
+          <span className="saldo-label">Total em débito</span>
+          <strong className="saldo-valor">{formatarMoeda(resumo?.valorTotalDebito ?? 0)}</strong>
+        </div>
+
+        <form className="pagamento-form" onSubmit={handleRegistrarPagamento}>
+          <input
+            type="number"
+            step="0.01"
+            min="0.01"
+            className="pagamento-input"
+            placeholder="Valor pago (R$)"
+            value={valorPagamento}
+            onChange={(e) => setValorPagamento(e.target.value)}
+            disabled={salvandoPagamento}
+          />
+          <button type="submit" className="btn-pagamento" disabled={salvandoPagamento}>
+            {salvandoPagamento ? 'Salvando...' : 'Registrar pagamento'}
+          </button>
+        </form>
       </div>
 
       {/* Lista de Pedidos do Cliente */}
@@ -87,9 +153,7 @@ export default function DetalhesCliente() {
                 
                 <div className="venda-linha-superior">
                   {/* Como já sabemos de quem é, podemos mostrar o Status no lugar do nome */}
-                  <h3 className={`venda-status ${pedido.emAberto ? 'status-pendente' : 'status-pago'}`}>
-                    {pedido.emAberto ? 'Pagamento Pendente' : 'Pago'}
-                  </h3>
+                  <h3 className="venda-titulo">Venda</h3>
                   <div className="venda-meta">
                     <span className="venda-data">{formatarData(pedido.dataPedido)}</span>
                     <button 

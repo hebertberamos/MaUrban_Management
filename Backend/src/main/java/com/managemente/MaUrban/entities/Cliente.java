@@ -29,4 +29,7 @@ public class Cliente {
     // mappedBy indica que o relacionamento já foi mapeado pelo atributo 'cliente' na classe PedidoCliente
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<PedidoCliente> pedidos = new ArrayList<>();
+
+    @Column(name = "saldo_inicial", nullable = false)
+    private double saldoInicial = 0.0;
 }

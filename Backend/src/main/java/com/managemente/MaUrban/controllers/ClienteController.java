@@ -3,6 +3,7 @@ package com.managemente.MaUrban.controllers;
 import com.managemente.MaUrban.dtos.ClienteRequestDTO;
 import com.managemente.MaUrban.dtos.ClienteResponseDTO;
 import com.managemente.MaUrban.dtos.ClienteResumoDTO;
+import com.managemente.MaUrban.dtos.PagamentoClienteRequestDTO;
 import com.managemente.MaUrban.servicies.ClienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -55,5 +56,17 @@ public class ClienteController {
     @GetMapping("/debito/total")
     public ResponseEntity<List<ClienteResumoDTO>> listarClientesValorTotalEmDebito() {
         return ResponseEntity.ok(clienteService.listarClientesComDebito());
+    }
+
+    @GetMapping("/{id}/resumo")
+    public ResponseEntity<ClienteResumoDTO> resumo(@PathVariable UUID id) {
+        return ResponseEntity.ok(clienteService.buscarResumo(id));
+    }
+
+    @PostMapping("/{id}/pagamentos")
+    public ResponseEntity<ClienteResumoDTO> registrarPagamento(
+            @PathVariable UUID id,
+            @RequestBody PagamentoClienteRequestDTO dto) {
+        return ResponseEntity.ok(clienteService.registrarPagamento(id, dto));
     }
 }

@@ -1,6 +1,7 @@
 package com.managemente.MaUrban.servicies;
 
 import com.managemente.MaUrban.dtos.MovimentacaoCaixaResponseDTO;
+import com.managemente.MaUrban.entities.Cliente;
 import com.managemente.MaUrban.entities.MovimentacaoCaixa;
 import com.managemente.MaUrban.entities.enums.TipoMovimentacao;
 import com.managemente.MaUrban.repositories.MovimentacaoCaixaRepository;
@@ -18,12 +19,18 @@ public class MovimentacaoCaixaService {
 
     @Transactional
     public void registrarMovimentacao(String descricao, double valor, TipoMovimentacao tipo) {
+        registrarMovimentacao(descricao, valor, tipo, null);
+    }
+
+    @Transactional
+    public void registrarMovimentacao(String descricao, double valor, TipoMovimentacao tipo, Cliente cliente) {
         MovimentacaoCaixa movimentacaoCaixa = new MovimentacaoCaixa();
 
         movimentacaoCaixa.setDescricao(descricao);
         movimentacaoCaixa.setValor(valor);
         movimentacaoCaixa.setTipoMovimentacao(tipo);
         movimentacaoCaixa.setDataMovimentacao(LocalDateTime.now());
+        movimentacaoCaixa.setCliente(cliente);
 
         repository.save(movimentacaoCaixa);
     }
