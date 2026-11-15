@@ -39,18 +39,8 @@
   padding: 16px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  cursor: pointer;
+  align-items: flex-end;  
   transition: all 0.2s ease;
-}
-
-.pagamento-item:hover {
-  background-color: #F1F3F5;
-}
-
-.pagamento-item.selecionado {
-  border: 2px solid #0099FF;
-  background-color: #FFFFFF;
 }
 
 .pagamento-info {
@@ -70,21 +60,13 @@
   color: #333;
 }
 
-.pagamento-status {
-  font-size: 14px;
-  font-weight: 400;
-}
-
-.status-pago {
-  color: #666; 
-}
-
-.status-nao-pago {
-  color: #999; 
-}
-
 .sem-dados {
   color: #888;
   font-style: italic;
   font-size: 14px;
+}
+
+.pagamento-data {
+  font-size: 14px;
+  color: #888;
 }

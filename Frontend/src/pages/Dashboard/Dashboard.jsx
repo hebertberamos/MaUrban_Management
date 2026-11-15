@@ -57,18 +57,6 @@ export default function Dashboard() {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
   };
 
-  const atualizarResumo = async () => {
-    const ano = dataAlvo.getFullYear();
-    const mes = dataAlvo.getMonth() + 1;
-
-    try {
-      const dadosResumo = await dashboardService.obterResumo(ano, mes);
-      setResumo(dadosResumo);
-    } catch (error) {
-      console.error('Erro ao atualizar resumo:', error);
-    }
-  };
-
   return (
     <div className="dashboard-container">
       
@@ -140,7 +128,6 @@ export default function Dashboard() {
         <ListaPagamentos 
           mes={dataAlvo.getMonth() + 1} 
           ano={dataAlvo.getFullYear()} 
-          onAtualizarResumo={atualizarResumo} 
         />
         <DebitoMensal 
           mes={dataAlvo.getMonth() + 1} 

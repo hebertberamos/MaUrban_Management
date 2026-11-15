@@ -21,10 +21,11 @@ public class DashboardController {
         return ResponseEntity.ok(dashboardService.obterResumo(ano, mes));
     }
 
-    @GetMapping("/pagamentos")
-    public ResponseEntity<List<PagamentoDashboardDTO>> listarPagamentosMensal(@RequestParam int ano, @RequestParam int mes) {
-        return ResponseEntity.ok(dashboardService.listarPagamentosClientesMensal(ano, mes));
-    }
+//    @GetMapping("/pagamentos")
+//    public ResponseEntity<List<PagamentoDashboardDTO>> listarPagamentosMensal(@RequestParam int ano, @RequestParam int mes) {
+//        return ResponseEntity.ok(dashboardService.listarPagamentosClientesMensal(ano, mes));
+//    }
+
 
     @GetMapping("/debitos-mensais")
     public ResponseEntity<List<DebitoMensalDTO>> getDebitosMensais(
