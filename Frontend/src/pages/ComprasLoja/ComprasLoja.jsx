@@ -192,6 +192,8 @@ export default function ComprasLoja() {
               const parcelas = compra.parcelas || [];
               const totalParcelas = parcelas.length || (compra.quantidadeDeParcelas || 0);
               const pagas = parcelas.filter(p => p.status === 'PAGO').length;
+              const valorParcela = parcelas[0]?.valorParcela
+                ?? (totalParcelas > 0 ? compra.valorTotal / totalParcelas : null);
 
               let statusCompra = 'PAGO';
               if (parcelas.length > 0) {
@@ -224,7 +226,9 @@ export default function ComprasLoja() {
 
                   <div className="compra-linha-inferior">
                     <span className="compra-detalhes">
-                      Total: {formatarMoeda(compra.valorTotal)} | Parcelas: {pagas} de {totalParcelas}
+                      Total: {formatarMoeda(compra.valorTotal)}
+                      {valorParcela != null && ` | Valor parcela: ${formatarMoeda(valorParcela)}`}
+                      {' | '}Pagas: {pagas} de {totalParcelas}
                     </span>
                   </div>
 
