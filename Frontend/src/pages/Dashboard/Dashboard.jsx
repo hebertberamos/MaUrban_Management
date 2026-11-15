@@ -99,19 +99,13 @@ export default function Dashboard() {
 
         <div className="cards-container">
             <div className="card">
-              <span>Total parcelas a receber</span>
-              <h2>{formatarMoeda(resumo.totalAReceber)}</h2>
-              <small>{textoMes}</small>
-            </div>
-          
-            <div className="card">
               <span>Total a pagar</span>
               <h2>{formatarMoeda(resumo.totalAPagar)}</h2>
               <small>{textoMes}</small>
             </div>
           
             <div className="card">
-              <span>Total já recebido</span>
+              <span>Mensal recebido</span>
               <h2>{formatarMoeda(resumo.totalJaRecebido)}</h2>
               <small>{textoMes}</small>
             </div>
