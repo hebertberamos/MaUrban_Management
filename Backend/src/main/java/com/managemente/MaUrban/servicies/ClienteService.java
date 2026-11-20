@@ -37,13 +37,13 @@ public class ClienteService {
 
         cliente = clienteRepository.save(cliente);
 
-        return new ClienteResponseDTO(cliente.getId(), cliente.getNome());
+        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial());
     }
 
     @Transactional(readOnly = true)
     public List<ClienteResponseDTO> listarTodos() {
         return clienteRepository.findAll().stream()
-                .map(cliente -> new ClienteResponseDTO(cliente.getId(), cliente.getNome()))
+                .map(cliente -> new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial()))
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +52,7 @@ public class ClienteService {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID: " + id));
 
-        return new ClienteResponseDTO(cliente.getId(), cliente.getNome());
+        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial());
     }
 
     @Transactional
@@ -60,10 +60,20 @@ public class ClienteService {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID: " + id));
 
-        cliente.setNome(dto.nome());
+        if (dto.nome() == null || dto.nome().trim().isEmpty()) {
+            throw new RuntimeException("O nome do cliente é obrigatório.");
+        }
+        if (dto.valorDebitoInicial() != null && dto.valorDebitoInicial() < 0) {
+            throw new RuntimeException("O débito inicial não pode ser negativo.");
+        }
+
+        cliente.setNome(dto.nome().trim());
+        if (dto.valorDebitoInicial() != null) {
+            cliente.setSaldoInicial(dto.valorDebitoInicial());
+        }
         cliente = clienteRepository.save(cliente);
 
-        return new ClienteResponseDTO(cliente.getId(), cliente.getNome());
+        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial());
     }
 
     @Transactional

@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from './api';
+import { apiGet, apiPost, apiPut } from './api';
 
 export async function listarClientesComDebito() {
   return apiGet('/clientes/debito/total');
@@ -17,6 +17,17 @@ export async function criarCliente(nome, valorDebitoInicial) {
   return apiPost('/clientes', payload);
 }
 
+export async function obterCliente(id) {
+  return apiGet(`/clientes/${id}`);
+}
+
+export async function atualizarCliente(id, nome, valorDebitoInicial) {
+  return apiPut(`/clientes/${id}`, {
+    nome: nome.trim(),
+    valorDebitoInicial: parseFloat(valorDebitoInicial),
+  });
+}
+
 // Fetch a single client with current debt
 export async function obterResumoCliente(id) {
   return apiGet(`/clientes/${id}/resumo`);
@@ -31,6 +42,8 @@ export default {
   listarClientesComDebito,
   listarClientes,
   criarCliente,
+  obterCliente,
+  atualizarCliente,
   obterResumoCliente,
   registrarPagamento,
 };
