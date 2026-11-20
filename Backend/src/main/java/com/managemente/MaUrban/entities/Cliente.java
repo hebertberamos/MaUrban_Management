@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,4 +33,7 @@ public class Cliente {
 
     @Column(name = "saldo_inicial", nullable = false)
     private double saldoInicial = 0.0;
+
+    @Column(name = "ultimo_pagamento")
+    private LocalDateTime ultimoPagamento;
 }

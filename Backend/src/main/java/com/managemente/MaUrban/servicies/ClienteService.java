@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,13 +38,13 @@ public class ClienteService {
 
         cliente = clienteRepository.save(cliente);
 
-        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial());
+        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial(), cliente.getUltimoPagamento());
     }
 
     @Transactional(readOnly = true)
     public List<ClienteResponseDTO> listarTodos() {
         return clienteRepository.findAll().stream()
-                .map(cliente -> new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial()))
+                .map(cliente -> new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial(), cliente.getUltimoPagamento()))
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +53,7 @@ public class ClienteService {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID: " + id));
 
-        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial());
+        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial(), cliente.getUltimoPagamento());
     }
 
     @Transactional
@@ -73,7 +74,7 @@ public class ClienteService {
         }
         cliente = clienteRepository.save(cliente);
 
-        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial());
+        return new ClienteResponseDTO(cliente.getId(), cliente.getNome(), cliente.getSaldoInicial(), cliente.getUltimoPagamento());
     }
 
     @Transactional
@@ -86,7 +87,11 @@ public class ClienteService {
 
     public List<ClienteResumoDTO> listarClientesComDebito() {
         return clienteRepository.findTodosClientesComResumoDebito().stream()
-                .map(r -> new ClienteResumoDTO(r.id(), r.nome(), arredondar(r.valorTotalDebito())))
+                .map(r -> new ClienteResumoDTO(
+                        r.id(),
+                        r.nome(),
+                        arredondar(r.valorTotalDebito()),
+                        r.ultimoPagamento()))
                 .toList();
     }
 
@@ -94,7 +99,11 @@ public class ClienteService {
     public ClienteResumoDTO buscarResumo(UUID id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID: " + id));
-        return new ClienteResumoDTO(cliente.getId(), cliente.getNome(), calcularSaldo(id));
+        return new ClienteResumoDTO(
+                cliente.getId(),
+                cliente.getNome(),
+                calcularSaldo(id),
+                cliente.getUltimoPagamento());
     }
 
     @Transactional
@@ -117,7 +126,14 @@ public class ClienteService {
                 TipoMovimentacao.ENTRADA,
                 cliente);
 
-        return new ClienteResumoDTO(cliente.getId(), cliente.getNome(), calcularSaldo(id));
+        cliente.setUltimoPagamento(LocalDateTime.now());
+        clienteRepository.save(cliente);
+
+        return new ClienteResumoDTO(
+                cliente.getId(),
+                cliente.getNome(),
+                calcularSaldo(id),
+                cliente.getUltimoPagamento());
     }
 
     private double calcularSaldo(UUID id) {

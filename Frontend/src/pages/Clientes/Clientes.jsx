@@ -37,6 +37,17 @@ export default function Clientes() {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
   };
 
+  const formatarUltimoPagamento = (data) => {
+    if (!data) return null;
+
+    const valor = new Date(data);
+    if (Number.isNaN(valor.getTime())) return null;
+
+    return new Intl.DateTimeFormat('pt-BR', {
+      dateStyle: 'short',
+    }).format(valor);
+  };
+
   const abrirEdicao = async (event, cliente) => {
     event.stopPropagation();
     try {
@@ -148,6 +159,11 @@ export default function Clientes() {
                   <span className="cliente-valor-total">
                     Valor total em débito: {formatarMoeda(cliente.valorTotalDebito)}
                   </span>
+                  {formatarUltimoPagamento(cliente.ultimoPagamento) && (
+                    <span className="cliente-ultimo-pagamento">
+                      Último pagamento: {formatarUltimoPagamento(cliente.ultimoPagamento)}
+                    </span>
+                  )}
                 </div>
                 <button
                   type="button"

@@ -22,7 +22,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
         + COALESCE((SELECT SUM(p.valorTotalPedido) FROM PedidoCliente p
                     WHERE p.cliente = c AND p.metodoPagamento = 'PROMISSORIA'), 0.0)
         - COALESCE((SELECT SUM(CASE WHEN m.tipoMovimentacao = 'ENTRADA' THEN m.valor ELSE -m.valor END)
-                    FROM MovimentacaoCaixa m WHERE m.cliente = c), 0.0)
+                    FROM MovimentacaoCaixa m WHERE m.cliente = c), 0.0),
+        c.ultimoPagamento
     )
     FROM Cliente c
     ORDER BY c.nome ASC

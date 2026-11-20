@@ -124,6 +124,11 @@
   color: #666;
 }
 
+.cliente-ultimo-pagamento {
+  font-size: 14px;
+  color: #777;
+}
+
 .btn-editar-cliente {
   background-color: #F0F0F0;
   color: #333;
