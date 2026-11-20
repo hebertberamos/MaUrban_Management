@@ -133,7 +133,6 @@ export default function ComprasLoja() {
           <button 
             className="btn-nova-despesa"
             onClick={() => navigate('/nova-despesa')}
-            style={{ marginLeft: '10px' }}
           >
             Registrar despesa
           </button>

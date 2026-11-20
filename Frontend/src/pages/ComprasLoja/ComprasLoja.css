@@ -13,6 +13,20 @@
   gap: 16px;
 }
 
+.compras-acoes-topo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: max-content;
+}
+
+.compras-acoes-topo .btn-nova-compra,
+.compras-acoes-topo .btn-nova-despesa {
+  width: 100%;
+  white-space: nowrap;
+  padding-inline: 18px;
+}
+
 .btn-nova-compra, .btn-nova-despesa {
   background-color: #3A3A3A;
   color: #FFFFFF;
